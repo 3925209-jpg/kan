@@ -1,0 +1,1009 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>漢帝国経営録</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@600;800&display=swap">
+<style>
+/* Layout: 上に年と国力、左に十三州の地図、右に州の詳細と国策、下に年送りバー */
+:root{
+  --bg:#e5ebe7; --card:#f2f5f2; --ink:#16221e; --mute:#566861; --line:#c3cfc8;
+  --accent:#a62f1c; --on-accent:#ffffff; --jade:#2c6c5b; --river:#6a98a5; --cell:#dde6e0; --hot:#b5452a;
+  --good:#2c6c5b; --bad:#a62f1c; --warn:#8a6a1f;
+  --serif:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  --sans:"Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1614; --card:#16211e; --ink:#e4ebe5; --mute:#8fa39a; --line:#2a3b36;
+    --accent:#d2a24f; --on-accent:#1a1408; --jade:#5fb59d; --river:#4f7f8c; --cell:#1c2a26; --hot:#d9824f;
+    --good:#5fb59d; --bad:#e0775a; --warn:#d2a24f; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1614; --card:#16211e; --ink:#e4ebe5; --mute:#8fa39a; --line:#2a3b36;
+  --accent:#d2a24f; --on-accent:#1a1408; --jade:#5fb59d; --river:#4f7f8c; --cell:#1c2a26; --hot:#d9824f;
+  --good:#5fb59d; --bad:#e0775a; --warn:#d2a24f; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.6;
+  font-variant-numeric:tabular-nums;margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding-block:16px 110px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.brand{display:flex;gap:12px;align-items:center;min-width:0}
+.seal{width:46px;height:46px;flex:none;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;
+  font-family:var(--serif);font-weight:800;font-size:28px;border-radius:2px}
+h1{font-family:var(--serif);font-weight:800;font-size:24px;line-height:1.2;margin:0;letter-spacing:.04em}
+.era{margin:2px 0 0;color:var(--mute);font-size:13px}
+details.scn{width:100%}
+details.scn summary{cursor:pointer;color:var(--jade);font-weight:700;width:max-content;padding:4px 0}
+.scn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-top:8px}
+.scn-btn{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:4px;padding:10px 12px;cursor:pointer}
+.scn-btn b{font-family:var(--serif);font-size:16px;display:block}
+.scn-btn span{color:var(--mute);font-size:12px;display:block;line-height:1.5}
+.scn-btn[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(124px,1fr));gap:8px;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:8px 10px;min-width:0}
+.stat dt{font-size:11px;color:var(--mute);letter-spacing:.08em}
+.stat dd{margin:0;font-weight:700;font-size:17px;line-height:1.3;overflow-wrap:anywhere}
+.stat small{display:block;font-weight:400;font-size:11px;color:var(--mute)}
+.bar{height:6px;background:var(--cell);border-radius:1px;overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;background:var(--jade)}
+.bar.hot i{background:var(--hot)}
+.layout{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:960px){.layout{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}}
+.stack{display:grid;gap:16px;align-content:start;min-width:0}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:14px;min-width:0}
+.panel h2{font-family:var(--serif);font-size:18px;margin:0 0 8px;font-weight:800;letter-spacing:.04em}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.seg{display:flex;flex-wrap:wrap;gap:4px}
+.seg button{border:1px solid var(--line);background:transparent;border-radius:3px;padding:3px 10px;font-size:12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+svg.map{width:100%;height:auto;display:block;margin-top:8px;background:var(--bg);border:1px solid var(--line);border-radius:3px}
+.map .ctx{fill:var(--cell);opacity:.55;stroke:none}
+.map .zh{stroke:var(--bg);stroke-width:.45;stroke-linejoin:round}
+.map .river{fill:none;stroke:var(--river);stroke-width:.45;stroke-linecap:round;stroke-linejoin:round;opacity:.9;pointer-events:none}
+.map g.pv{cursor:pointer}
+.map g.pv:hover .zh{stroke:var(--mute)}
+.map g.pv.sel .zh{stroke:var(--ink);stroke-width:.9}
+.map g.pv.reb .zh{stroke:var(--hot);stroke-width:.9;stroke-dasharray:1.3 .8}
+.map text{font-family:var(--sans);fill:var(--ink);text-anchor:middle;paint-order:stroke;stroke:var(--bg);stroke-width:.6px;stroke-linejoin:round;pointer-events:none}
+.map .nm{font-size:2.7px;font-weight:700}
+.map .vl{font-size:2px}
+.map .tg{font-size:2.3px;font-weight:700;fill:var(--bad)}
+.map .xn{font-size:3.4px;font-family:var(--serif);font-weight:800}
+.map .city{fill:var(--ink);stroke:var(--bg);stroke-width:.25}
+.map .city.cap{fill:var(--accent)}
+.map .cn{font-size:1.8px;text-anchor:start;fill:var(--mute)}
+.map .cn.capt{fill:var(--accent);font-weight:700}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:8px 0 2px}
+.chips button{flex:none;border:1px solid var(--line);background:transparent;border-radius:3px;padding:3px 9px;cursor:pointer;font-size:12px}
+.chips button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);font-weight:700}
+.legend{font-size:11px;color:var(--mute);margin:6px 0 0}
+.pname{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:6px}
+.pname b{font-family:var(--serif);font-size:22px;font-weight:800}
+.pname span{color:var(--mute);font-size:12px}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:0 6px;border-radius:2px;border:1px solid var(--bad);color:var(--bad)}
+.meters{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 16px;margin:8px 0 12px}
+.m{min-width:0}
+.m div.t{display:flex;justify-content:space-between;gap:8px;font-size:12px}
+.m div.t span:first-child{color:var(--mute)}
+.acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.btn{border:1px solid var(--line);background:transparent;border-radius:3px;padding:7px 10px;text-align:left;cursor:pointer;min-width:0}
+.btn b{display:block;font-size:13px}
+.btn small{display:block;color:var(--mute);font-size:11px;line-height:1.4}
+.btn:hover:not(:disabled){border-color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.pri{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.btn.pri small{color:inherit;opacity:.85}
+.ctl{display:grid;gap:4px;margin-bottom:12px}
+.ctl label,.ctl .lb{display:flex;justify-content:space-between;font-weight:500}
+.ctl output{font-weight:700}
+.ctl .hint{font-size:11px;color:var(--mute);line-height:1.5}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.tog{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+.tog input{width:18px;height:18px;margin-top:3px;accent-color:var(--accent);flex:none}
+.tog label{font-weight:500}
+.tog .hint{display:block;font-size:11px;color:var(--mute);font-weight:400;line-height:1.5}
+.log{list-style:none;margin:0;padding:0;max-height:340px;overflow-y:auto}
+.log li{display:grid;grid-template-columns:64px 1fr;gap:8px;padding:5px 0;border-top:1px solid var(--line);font-size:13px}
+.log li:first-child{border-top:0}
+.log .y{color:var(--mute);font-size:11px;padding-top:2px}
+.log .bad{color:var(--bad)} .log .good{color:var(--good)} .log .warn{color:var(--warn)} .log .act{font-weight:500}
+.chart{width:100%;height:auto;display:block;margin-top:6px}
+.chart text{fill:var(--mute);font-size:8px;font-family:var(--sans)}
+.chart .gl{stroke:var(--line);stroke-width:.5}
+.chart .ln{fill:none;stroke:var(--accent);stroke-width:1.6}
+.chart .pt{fill:var(--accent)}
+.bottom{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--card);border-top:1px solid var(--line);
+  padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bottom .in{max-width:1180px;margin:0 auto;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.pts{font-size:13px}
+.pts b{font-family:var(--serif);font-size:22px}
+.pips{display:inline-flex;gap:3px;margin-left:6px;vertical-align:middle}
+.pips i{width:9px;height:9px;border-radius:50%;background:var(--cell);border:1px solid var(--mute)}
+.pips i.on{background:var(--accent);border-color:var(--accent)}
+.bottom .grp{display:flex;gap:8px;align-items:center}
+.nxt{padding:9px 20px;font-weight:700;font-size:15px;border-radius:3px;border:0;background:var(--accent);color:var(--on-accent);cursor:pointer}
+.nxt:disabled{opacity:.5;cursor:not-allowed}
+.auto{padding:9px 12px;border:1px solid var(--line);background:transparent;border-radius:3px;cursor:pointer}
+.auto[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.over{border:2px solid var(--bad);background:var(--card);border-radius:4px;padding:16px;margin-bottom:16px}
+.over h2{font-family:var(--serif);font-size:26px;margin:0 0 6px;color:var(--bad)}
+.over p{margin:4px 0}
+.note{font-size:11px;color:var(--mute);margin-top:12px}
+.states{display:grid;gap:6px;margin-top:8px}
+.stbtn{display:grid;grid-template-columns:14px minmax(0,1fr) auto;gap:10px;align-items:center;text-align:left;border:1px solid var(--line);background:transparent;border-radius:3px;padding:6px 10px;cursor:pointer;min-width:0}
+.stbtn i{width:12px;height:12px;border-radius:2px;border:1px solid var(--ink)}
+.stbtn b{font-family:var(--serif);font-size:15px}
+.stbtn small{display:block;color:var(--mute);font-size:11px;line-height:1.4}
+.stbtn .num{font-size:12px;color:var(--mute)}
+.stbtn[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.owner{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700}
+.owner i{width:10px;height:10px;border-radius:2px;border:1px solid var(--ink)}
+.map .ow{stroke:var(--ink);stroke-width:.2}
+.ctl input:disabled{opacity:.5}
+.mapwrap{overflow:auto;max-height:78vh;margin-top:8px;border:1px solid var(--line);border-radius:3px;background:var(--bg)}
+.mapwrap svg.map{margin:0;border:0;border-radius:0;max-width:none}
+.map .nm{font-size:2.1px}
+.map .vl{font-size:1.6px}
+.map .tg{font-size:1.8px}
+.map .cn{font-size:1.5px}
+.map .xn{font-size:3px}
+.map .ow{stroke-width:.15}
+.map .city{pointer-events:none}
+.chips{display:block;overflow:visible;padding:0}
+.bottom .sel{width:auto;padding:5px 6px}
+.mini{font-size:12px;color:var(--mute)}
+.bottom .grp{flex-wrap:wrap;justify-content:flex-end}
+.sel{width:100%;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:3px;padding:6px 8px}
+@media (prefers-reduced-motion:no-preference){.bar i{transition:width .4s}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="seal" aria-hidden="true">漢</div>
+      <div><h1>漢帝国経営録</h1><p class="era" id="eraLine"></p></div>
+    </div>
+    <details class="scn" id="scn"><summary>時代を選んで最初からやり直す</summary><div class="scn-grid" id="scnGrid"></div></details>
+  </header>
+
+  <dl class="stats" id="stats"></dl>
+
+  <div class="layout">
+    <div class="stack">
+      <section class="panel">
+        <div class="row">
+          <h2>諸郡</h2>
+          <div class="seg" id="layerSeg" role="group" aria-label="地図の表示"></div>
+        </div>
+        <div class="row" style="margin-top:8px"><span class="legend" style="margin:0">拡大</span><div class="seg" id="zoomSeg" role="group" aria-label="地図の拡大"></div></div>
+        <div class="mapwrap"><svg class="map" id="map" viewBox="0 0 100 100" role="img" aria-label="漢の領土の郡別地図"></svg></div>
+        <p class="legend" id="legend"></p>
+        <p class="legend">海岸線と河川は Natural Earth(現代の地形)。郡の領域は各郡の治所の位置から起こした概略で、黄河の流路などは当時と異なります。</p>
+        <div class="chips" id="chips"></div>
+      </section>
+      <section class="panel">
+        <div class="row"><h2>推移</h2><div class="seg" id="chartSeg" role="group" aria-label="グラフの指標"></div></div>
+        <div id="chart"></div>
+      </section>
+    </div>
+
+    <div class="stack">
+      <section class="panel" id="statePanel"></section>
+      <section class="panel" id="provPanel" aria-live="polite"></section>
+      <section class="panel">
+        <h2 id="polTitle">国策</h2>
+        <div class="tog"><input type="checkbox" id="autoGov"><label for="autoGov">政務を自動で行う<span class="hint">税・徭役・開墾などをAIに任せます。切ると手動で統治できます。他の国は常に自動です。</span></label></div>
+        <div class="ctl">
+          <label for="tax">田租の税率 <output id="taxOut"></output></label>
+          <input type="range" id="tax" min="3" max="30" step="1">
+          <span class="hint">高いほど国庫は潤いますが、民心が離れます。豪族の隠田は税を逃れます。</span>
+        </div>
+        <div class="ctl">
+          <label for="corvee">徭役・労役 <output id="corveeOut"></output></label>
+          <input type="range" id="corvee" min="0" max="3" step="1">
+          <span class="hint">開墾と堤防が自然に進みますが、民心を下げます。</span>
+        </div>
+        <div class="tog"><input type="checkbox" id="salt"><label for="salt">塩鉄専売<span class="hint">収入+10%。民心がやや下がり、商人系の豪族は抑えられます。</span></label></div>
+        <div class="tog"><input type="checkbox" id="sell"><label for="sell">売官<span class="hint">収入+4%。官界の腐敗が年ごとに進みます。</span></label></div>
+        <div class="tog"><input type="checkbox" id="heqin"><label for="heqin">匈奴への和親(貢納)<span class="hint">歳入の1.5%を贈り、匈奴の脅威を毎年下げます。</span></label></div>
+        <div class="acts" id="natActs"></div>
+      </section>
+      <section class="panel">
+        <h2>年代記</h2>
+        <ul class="log" id="log"></ul>
+        <p class="note">人口・州境・制度は史実の概数に基づく簡略モデルです。国が崩れると天下は複数の国に分かれ、戦争や統一、王朝交代を繰り返しながら続きます。北辺を守れない状態が続くと、遊牧民の国が建ちます。史実どおりの展開は再現しません。</p>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div class="bottom"><div class="in">
+  <div class="pts">政務 <b id="ptsN">5</b>/<span id="ptsMax">5</span><span class="pips" id="pips"></span></div>
+  <div class="grp">
+    <label class="mini" for="stepN">1回に進む年数</label>
+    <select id="stepN" class="sel"><option value="1">1年</option><option value="5">5年</option><option value="10">10年</option><option value="25">25年</option><option value="50">50年</option></select>
+    <label class="mini" for="speed">速さ</label>
+    <select id="speed" class="sel"><option value="1000">ゆっくり</option><option value="500" selected>ふつう</option><option value="200">速い</option><option value="60">最速</option></select>
+    <button class="auto" id="auto" aria-pressed="false">自動進行</button>
+    <button class="nxt" id="next">次の年へ</button>
+  </div>
+</div></div>
+
+<script>
+/*CORE*/
+
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const fmt=n=>Math.round(n).toLocaleString('ja-JP');
+const rnd=Math.random;
+const PROV=[
+ {id:'jingzhao',name:'京兆尹',nm:'秦',zhou:'si',sub:'司隷・長安',share:195,fa:10,river:true},
+ {id:'hongnong',name:'弘農',nm:'弘農',zhou:'si',sub:'司隷・陝',share:78,fa:10,river:true},
+ {id:'henan',name:'河南尹',nm:'周',zhou:'si',sub:'司隷・洛陽',share:156,fa:10,river:true},
+ {id:'henei',name:'河内',nm:'河内',zhou:'si',sub:'司隷・懐',share:111,fa:10,river:true},
+ {id:'hedong',name:'河東',nm:'晋',zhou:'si',sub:'司隷・安邑',share:111,fa:10,river:true},
+ {id:'yingchuan',name:'潁川',nm:'潁川',zhou:'yu',sub:'豫州・陽翟',share:202,fa:8,river:true},
+ {id:'runan',name:'汝南',nm:'汝南',zhou:'yu',sub:'豫州・平輿',share:264,fa:8,river:true},
+ {id:'chenguo',name:'陳国',nm:'陳',zhou:'yu',sub:'豫州・陳',share:114,fa:8,river:true},
+ {id:'liangguo',name:'梁国',nm:'梁',zhou:'yu',sub:'豫州・睢陽',share:150,fa:8,river:true},
+ {id:'peiguo',name:'沛国',nm:'沛',zhou:'yu',sub:'豫州・相',share:150,fa:8,river:true},
+ {id:'weijun',name:'魏郡',nm:'魏',zhou:'ji',sub:'冀州・鄴',share:198,fa:5,river:true},
+ {id:'julu',name:'鉅鹿',nm:'趙',zhou:'ji',sub:'冀州・癭陶',share:217,fa:5,river:true},
+ {id:'zhongshan',name:'中山',nm:'中山',zhou:'ji',sub:'冀州・盧奴',share:138,fa:5,river:true},
+ {id:'hejian',name:'河間',nm:'河間',zhou:'ji',sub:'冀州・楽成',share:109,fa:5,river:true},
+ {id:'bohai',name:'渤海',nm:'渤海',zhou:'ji',sub:'冀州・南皮',share:128,fa:5,river:true},
+ {id:'chenliu',name:'陳留',nm:'陳留',zhou:'yan',sub:'兗州・陳留',share:220,fa:8,river:true},
+ {id:'dongjun',name:'東郡',nm:'東郡',zhou:'yan',sub:'兗州・濮陽',share:200,fa:8,river:true},
+ {id:'shanyang',name:'山陽',nm:'山陽',zhou:'yan',sub:'兗州・昌邑',share:180,fa:8,river:true},
+ {id:'taishan',name:'泰山',nm:'泰山',zhou:'yan',sub:'兗州・奉高',share:180,fa:8,river:true},
+ {id:'pingyuan',name:'平原',nm:'平原',zhou:'qing',sub:'青州・平原',share:152,fa:5,river:true},
+ {id:'jinan',name:'済南',nm:'済南',zhou:'qing',sub:'青州・東平陵',share:142,fa:5,river:true},
+ {id:'beihai',name:'北海',nm:'斉',zhou:'qing',sub:'青州・営陵',share:171,fa:5,river:true},
+ {id:'donglai',name:'東萊',nm:'東萊',zhou:'qing',sub:'青州・黄',share:104,fa:5,river:true},
+ {id:'pengcheng',name:'彭城',nm:'彭城',zhou:'xu',sub:'徐州・彭城',share:156,fa:3,river:true},
+ {id:'langye',name:'琅邪',nm:'琅邪',zhou:'xu',sub:'徐州・開陽',share:166,fa:3,river:true},
+ {id:'xiapi',name:'下邳',nm:'下邳',zhou:'xu',sub:'徐州・下邳',share:135,fa:3,river:true},
+ {id:'guangling',name:'広陵',nm:'広陵',zhou:'xu',sub:'徐州・広陵',share:104,fa:3,river:true},
+ {id:'nanyang',name:'南陽',nm:'南陽',zhou:'jing',sub:'荊州・宛',share:103,fa:-5},
+ {id:'xiangyang',name:'襄陽',nm:'襄陽',zhou:'jing',sub:'荊州・襄陽',share:46,fa:-5},
+ {id:'jiangxia',name:'江夏',nm:'江夏',zhou:'jing',sub:'荊州・安陸',share:51,fa:-5},
+ {id:'nanjun',name:'南郡',nm:'楚',zhou:'jing',sub:'荊州・江陵',share:63,fa:-5},
+ {id:'wuling',name:'武陵',nm:'武陵',zhou:'jing',sub:'荊州・臨沅',share:29,fa:-5},
+ {id:'changsha',name:'長沙',nm:'長沙',zhou:'jing',sub:'荊州・臨湘',share:57,fa:-5},
+ {id:'lingling',name:'零陵',nm:'零陵',zhou:'jing',sub:'荊州・泉陵',share:29,fa:-5},
+ {id:'guiyang',name:'桂陽',nm:'桂陽',zhou:'jing',sub:'荊州・郴',share:23,fa:-5},
+ {id:'jiujiang',name:'九江',nm:'九江',zhou:'yang',sub:'揚州・寿春',share:65,fa:-12},
+ {id:'danyang',name:'丹陽',nm:'丹陽',zhou:'yang',sub:'揚州・建業',share:58,fa:-12},
+ {id:'wujun',name:'呉郡',nm:'呉',zhou:'yang',sub:'揚州・呉',share:51,fa:-12},
+ {id:'kuaiji',name:'会稽',nm:'越',zhou:'yang',sub:'揚州・山陰',share:58,fa:-12},
+ {id:'yuzhang',name:'豫章',nm:'豫章',zhou:'yang',sub:'揚州・南昌',share:58,fa:-12},
+ {id:'jianan',name:'建安',nm:'建安',zhou:'yang',sub:'揚州・東冶',share:29,fa:-12},
+ {id:'shu',name:'蜀郡',nm:'蜀',zhou:'yi',sub:'益州・成都',share:145,fa:3},
+ {id:'guanghan',name:'広漢',nm:'広漢',zhou:'yi',sub:'益州・涪',share:59,fa:3},
+ {id:'baxi',name:'巴郡',nm:'巴',zhou:'yi',sub:'益州・江州',share:66,fa:3},
+ {id:'hanzhong',name:'漢中',nm:'漢中',zhou:'yi',sub:'益州・南鄭',share:53,fa:3},
+ {id:'qianwei',name:'犍為',nm:'犍為',zhou:'yi',sub:'益州・僰道',share:46,fa:3},
+ {id:'yuexi',name:'越巂',nm:'越巂',zhou:'yi',sub:'益州・邛都',share:26,fa:3},
+ {id:'yizhou',name:'益州郡',nm:'滇',zhou:'yi',sub:'益州・滇池',share:39,fa:3},
+ {id:'zangke',name:'牂牁',nm:'牂牁',zhou:'yi',sub:'益州・故且蘭',share:26,fa:3},
+ {id:'yongchang',name:'永昌',nm:'永昌',zhou:'yi',sub:'益州・不韋',share:20,fa:3},
+ {id:'wuwei',name:'武威',nm:'涼',zhou:'liang',sub:'涼州・姑臧',share:20,fa:-20,border:true},
+ {id:'jincheng',name:'金城',nm:'金城',zhou:'liang',sub:'涼州・允吾',share:16,fa:-20,border:true},
+ {id:'longxi',name:'隴西',nm:'隴西',zhou:'liang',sub:'涼州・狄道',share:16,fa:-20,border:true},
+ {id:'tianshui',name:'天水',nm:'天水',zhou:'liang',sub:'涼州・冀',share:20,fa:-20,border:true},
+ {id:'anding',name:'安定',nm:'安定',zhou:'liang',sub:'涼州・臨涇',share:16,fa:-20,border:true},
+ {id:'zhangye',name:'張掖',nm:'張掖',zhou:'liang',sub:'涼州・觻得',share:12,fa:-20,border:true},
+ {id:'taiyuan',name:'太原',nm:'代',zhou:'bing',sub:'并州・晋陽',share:75,fa:-15,border:true},
+ {id:'shangdang',name:'上党',nm:'上党',zhou:'bing',sub:'并州・長子',share:42,fa:-15,border:true},
+ {id:'xihe',name:'西河',nm:'西河',zhou:'bing',sub:'并州・離石',share:25,fa:-15,border:true},
+ {id:'yanmen',name:'雁門',nm:'雁門',zhou:'bing',sub:'并州・陰館',share:33,fa:-15,border:true},
+ {id:'yunzhong',name:'雲中',nm:'雲中',zhou:'bing',sub:'并州・雲中',share:17,fa:-15,border:true},
+ {id:'shuofang',name:'朔方',nm:'朔方',zhou:'bing',sub:'并州・臨戎',share:8,fa:-15,border:true},
+ {id:'guangyang',name:'広陽',nm:'燕',zhou:'you',sub:'幽州・薊',share:100,fa:-15,border:true},
+ {id:'shanggu',name:'上谷',nm:'上谷',zhou:'you',sub:'幽州・沮陽',share:40,fa:-15,border:true},
+ {id:'yuyang',name:'漁陽',nm:'漁陽',zhou:'you',sub:'幽州・漁陽',share:50,fa:-15,border:true},
+ {id:'youbeiping',name:'右北平',nm:'右北平',zhou:'you',sub:'幽州・土垠',share:40,fa:-15,border:true},
+ {id:'liaoxi',name:'遼西',nm:'遼西',zhou:'you',sub:'幽州・陽楽',share:40,fa:-15,border:true},
+ {id:'liaodong',name:'遼東',nm:'遼東',zhou:'you',sub:'幽州・襄平',share:60,fa:-15,border:true},
+ {id:'nanhai',name:'南海',nm:'南越',zhou:'jiao',sub:'交州・番禺',share:19,fa:-22},
+ {id:'cangwu',name:'蒼梧',nm:'蒼梧',zhou:'jiao',sub:'交州・広信',share:11,fa:-22},
+ {id:'yulin',name:'鬱林',nm:'鬱林',zhou:'jiao',sub:'交州・布山',share:11,fa:-22},
+ {id:'hepu',name:'合浦',nm:'合浦',zhou:'jiao',sub:'交州・合浦',share:7,fa:-22},
+ {id:'jiaozhi',name:'交趾',nm:'交趾',zhou:'jiao',sub:'交州・龍編',share:30,fa:-22},
+ {id:'jiuzhen',name:'九真',nm:'九真',zhou:'jiao',sub:'交州・胥浦',share:15,fa:-22},
+ {id:'rinan',name:'日南',nm:'日南',zhou:'jiao',sub:'交州・西捲',share:7,fa:-22}
+];
+const LINKS=[["jingzhao","hongnong"],["jingzhao","hedong"],["jingzhao","tianshui"],["jingzhao","anding"],["jingzhao","xihe"],["hongnong","henan"],["hongnong","hedong"],["henan","henei"],["henan","hedong"],["henan","yingchuan"],["henan","nanyang"],["henan","shangdang"],["henei","hedong"],["henei","yingchuan"],["henei","shangdang"],["hedong","shangdang"],["hedong","xihe"],["yingchuan","runan"],["yingchuan","chenguo"],["yingchuan","chenliu"],["yingchuan","nanyang"],["runan","chenguo"],["runan","peiguo"],["runan","nanyang"],["runan","jiangxia"],["runan","jiujiang"],["chenguo","liangguo"],["chenguo","peiguo"],["chenguo","chenliu"],["liangguo","peiguo"],["liangguo","chenliu"],["liangguo","shanyang"],["peiguo","shanyang"],["peiguo","pengcheng"],["peiguo","jiujiang"],["weijun","julu"],["weijun","chenliu"],["weijun","dongjun"],["weijun","shangdang"],["julu","zhongshan"],["julu","hejian"],["julu","bohai"],["julu","dongjun"],["julu","taishan"],["zhongshan","hejian"],["zhongshan","yanmen"],["zhongshan","guangyang"],["zhongshan","shanggu"],["hejian","bohai"],["hejian","guangyang"],["bohai","dongjun"],["bohai","taishan"],["bohai","pingyuan"],["bohai","jinan"],["bohai","guangyang"],["bohai","youbeiping"],["chenliu","dongjun"],["chenliu","shanyang"],["dongjun","shanyang"],["dongjun","taishan"],["shanyang","taishan"],["taishan","pingyuan"],["taishan","jinan"],["taishan","beihai"],["taishan","langye"],["pingyuan","jinan"],["jinan","beihai"],["beihai","donglai"],["beihai","langye"],["pengcheng","xiapi"],["pengcheng","jiujiang"],["langye","xiapi"],["langye","guangling"],["xiapi","guangling"],["xiapi","jiujiang"],["xiapi","danyang"],["guangling","danyang"],["guangling","wujun"],["nanyang","xiangyang"],["nanyang","jiangxia"],["xiangyang","jiangxia"],["xiangyang","nanjun"],["xiangyang","hanzhong"],["jiangxia","nanjun"],["jiangxia","changsha"],["jiangxia","jiujiang"],["jiangxia","yuzhang"],["nanjun","wuling"],["nanjun","changsha"],["nanjun","baxi"],["nanjun","hanzhong"],["wuling","changsha"],["wuling","lingling"],["wuling","baxi"],["changsha","lingling"],["changsha","guiyang"],["changsha","yuzhang"],["lingling","guiyang"],["lingling","cangwu"],["guiyang","yuzhang"],["guiyang","nanhai"],["guiyang","cangwu"],["jiujiang","danyang"],["jiujiang","yuzhang"],["danyang","wujun"],["danyang","kuaiji"],["danyang","yuzhang"],["wujun","kuaiji"],["kuaiji","yuzhang"],["kuaiji","jianan"],["yuzhang","jianan"],["yuzhang","nanhai"],["jianan","nanhai"],["shu","guanghan"],["shu","baxi"],["shu","qianwei"],["shu","yuexi"],["guanghan","baxi"],["guanghan","hanzhong"],["guanghan","tianshui"],["baxi","hanzhong"],["baxi","qianwei"],["baxi","zangke"],["hanzhong","tianshui"],["qianwei","yuexi"],["qianwei","yizhou"],["qianwei","zangke"],["yuexi","yizhou"],["yuexi","yongchang"],["yizhou","zangke"],["yizhou","yongchang"],["yizhou","jiaozhi"],["zangke","yulin"],["zangke","jiaozhi"],["wuwei","jincheng"],["wuwei","anding"],["wuwei","zhangye"],["jincheng","longxi"],["jincheng","anding"],["jincheng","zhangye"],["longxi","tianshui"],["longxi","anding"],["tianshui","anding"],["anding","xihe"],["anding","shuofang"],["taiyuan","shangdang"],["taiyuan","xihe"],["taiyuan","yanmen"],["shangdang","xihe"],["xihe","yanmen"],["xihe","yunzhong"],["xihe","shuofang"],["yanmen","yunzhong"],["yanmen","shanggu"],["yunzhong","shuofang"],["guangyang","shanggu"],["guangyang","yuyang"],["guangyang","youbeiping"],["shanggu","yuyang"],["yuyang","youbeiping"],["youbeiping","liaoxi"],["youbeiping","liaodong"],["liaoxi","liaodong"],["nanhai","cangwu"],["cangwu","yulin"],["cangwu","hepu"],["yulin","hepu"],["yulin","jiaozhi"],["hepu","jiaozhi"],["hepu","rinan"],["jiaozhi","jiuzhen"],["jiuzhen","rinan"]];
+const ZNAME={"si":"司隷","yu":"豫州","ji":"冀州","yan":"兗州","xu":"徐州","qing":"青州","jing":"荊州","yang":"揚州","yi":"益州","liang":"涼州","bing":"并州","you":"幽州","jiao":"交州"};
+const NB={};PROV.forEach(d=>NB[d.id]=[]);LINKS.forEach(([a,b])=>{NB[a].push(b);NB[b].push(a);});
+const Z={};PROV.forEach(r=>{(Z[r.zhou]=Z[r.zhou]||[]).push(r.id);});
+function expandIds(list){const out=[];list.forEach(k=>{if(Z[k])out.push(...Z[k]);else out.push(k);});return out;}
+const SCEN=[
+ {id:'gaozu',label:'高祖即位',year:-202,note:'楚漢戦争の直後。人口は激減し、北に匈奴が迫る。',scale:.25,treasury:2500,corruption:10,threat:70,order:62,clan:35,farm:35,cap:'jingzhao'},
+ {id:'wu',label:'武帝即位',year:-141,note:'文景の治で国庫は満ちた。匈奴との決着を迫られる。',scale:.5,treasury:30000,corruption:15,threat:75,order:72,clan:45,farm:50,cap:'jingzhao'},
+ {id:'ping',label:'前漢末',year:2,note:'戸口調査で人口が最大に達した頃。豪族の力が強まる。',scale:1,treasury:20000,corruption:40,threat:35,order:60,clan:55,farm:62,cap:'jingzhao'},
+ {id:'shun',label:'後漢中期',year:140,note:'外戚と宦官が争い、羌の反乱が続く。人口は南へ移った。',scale:.8,treasury:12000,corruption:60,threat:50,order:56,clan:70,farm:60,cap:'henan',
+  mult:{si:.5,liang:1.8,jing:1.6,yang:1.7,yi:1.2,jiao:1.5,yu:.85,ji:.85}},
+ {id:'huangjin',label:'黄巾の乱',year:184,note:'腐敗した朝廷に太平道が蜂起した。各地の反乱を抑えられなければ、天下は割れる。',scale:.8,treasury:8000,corruption:72,threat:40,order:44,clan:72,farm:58,cap:'henan',
+  mult:{si:.5,liang:1.8,jing:1.6,yang:1.7,yi:1.2,jiao:1.5,yu:.85,ji:.85},rebels:['ji','yu','qing','xu','jing'],rebelRate:.6},
+ {id:'qunxiong',label:'群雄割拠',year:191,note:'董卓の専横に反発した州牧・太守が自立した。曹操・袁紹・劉表らが覇を競う。',scale:.45,tpp:3,threat:45,order:52,clan:62,farm:55,
+  mult:{si:.4,liang:1.6,jing:1.5,yang:1.5,yi:1.2,jiao:1.4,yu:.85,ji:.9,yan:.8,xu:.8},
+  states:[
+   {name:'董卓',provs:['si'],cap:'jingzhao',cor:75},
+   {name:'袁紹',provs:['ji'],cap:'weijun',cor:20},
+   {name:'張燕',provs:['shangdang'],cor:20},
+   {name:'張楊',provs:['taiyuan','xihe','yanmen','yunzhong','shuofang'],cap:'taiyuan',cor:25},
+   {name:'公孫瓚',provs:['guangyang','shanggu','yuyang','youbeiping','liaoxi'],cap:'guangyang',cor:20},
+   {name:'公孫度',provs:['liaodong'],cor:20},
+   {name:'曹操',provs:['yan'],cap:'chenliu',cor:15,me:true},
+   {name:'袁術',provs:['yu','nanyang','jiujiang'],cap:'nanyang',cor:35},
+   {name:'陶謙',provs:['xu'],cap:'xiapi',cor:30},
+   {name:'孔融',provs:['qing'],cap:'beihai',cor:25},
+   {name:'劉表',provs:['xiangyang','jiangxia','nanjun','wuling','changsha','lingling','guiyang'],cap:'xiangyang',cor:20},
+   {name:'劉焉',provs:['shu','guanghan','baxi','qianwei','yuexi','yizhou','zangke','yongchang'],cap:'shu',cor:20},
+   {name:'張魯',provs:['hanzhong'],cor:15},
+   {name:'馬騰',provs:['longxi','tianshui','anding'],cap:'anding',cor:25},
+   {name:'韓遂',provs:['jincheng','wuwei','zhangye'],cap:'jincheng',cor:25},
+   {name:'劉繇',provs:['danyang','wujun','kuaiji','yuzhang','jianan'],cap:'danyang',cor:25},
+   {name:'士燮',provs:['jiao'],cap:'jiaozhi',cor:15}]},
+ {id:'sanguo',label:'三国鼎立',year:222,note:'魏・蜀・呉が並び立った。遼東には公孫氏が割拠する。弱小の蜀で天下を窺うか、魏か呉を選ぶか。',scale:.22,tpp:4,threat:35,order:58,clan:55,farm:60,
+  mult:{si:.4,yu:.65,ji:.85,yan:.65,xu:.55,qing:.7,bing:.5,you:.9,liang:1.2,jing:1.5,yang:1.8,yi:1.6,jiao:1.7},
+  states:[
+   {name:'魏',provs:['si','yu','ji','yan','qing','xu','bing','guangyang','shanggu','yuyang','youbeiping','liaoxi','liang','nanyang','xiangyang','jiujiang'],cap:'henan',cor:30},
+   {name:'呉',provs:['jiangxia','nanjun','wuling','changsha','lingling','guiyang','danyang','wujun','kuaiji','yuzhang','jianan','jiao'],cap:'danyang',cor:25},
+   {name:'蜀',provs:['yi'],cap:'shu',cor:15,me:true},
+   {name:'公孫氏',provs:['liaodong'],cap:'liaodong',cor:20}]}
+
+];
+function yearLabel(y){return y<0?`紀元前${-y}年`:`西暦${y}年`}
+function eraName(y){return y<25?'前漢':'後漢'}
+function rebelName(y){return y<0?'流民の蜂起':y<100?'赤眉のような民乱':(y>=184&&y<=205)?'黄巾の蜂起':'黄巾のような蜂起'}
+const SCOL=['#b03a2a','#2f7d68','#3b62ad','#b8832a','#80509a','#2b8aa0','#b04f72','#668530','#8f5c2c','#4a5399','#c0602f','#3d8a5e','#a0a02f','#7a3a3a','#2f6a8a','#8a3a8a','#5a8a3a','#c07a8a','#3a5a5a','#9a6a2a','#6a6aa0','#a04a2a','#4a8a8a','#8a8a4a'];
+const DYN=['新','魏','晋','宋','斉','梁','陳','隋','唐'];
+function capCity(g,S){return S.capital;}
+function livingStates(g){return g.states.filter(s=>s.alive);}
+function psOf(g,S){return g.provs.filter(p=>p.owner===S.id);}
+function pickName(g,base){
+  const used=new Set(g.states.filter(s=>s.alive).map(s=>s.name));
+  for(const pre of ['','後','大','新']){if(!used.has(pre+base))return pre+base;}
+  return base+(g.sn+1);
+}
+function setCapital(g,S){
+  const ps=psOf(g,S);if(!ps.length)return;
+  if(S.capital&&g.by[S.capital].owner===S.id)return;
+  S.capital=ps.slice().sort((a,b)=>b.pop-a.pop)[0].id;
+}
+function mkState(g,name,provIds,treasury,corr){
+  g.sn++;const id='s'+g.sn;
+  const used=new Set(g.states.filter(s=>s.alive).map(s=>s.color));
+  const color=SCOL.find(c=>!used.has(c))||SCOL[g.sn%SCOL.length];
+  const S={id,name,color,treasury,corruption:corr,tax:.10,corvee:1,salt:false,sell:false,heqin:false,points:5,m:60,lowM:0,unpaid:0,
+    alive:true,born:g.year,died:null,capital:null,ruler:.7+rnd()*.45,reign:0,last:{revenue:0,army:0,officials:0,court:0,tribute:0,net:0}};
+  g.states.push(S);g.sb[id]=S;
+  provIds.forEach(pid=>{g.by[pid].owner=id;});
+  setCapital(g,S);
+  S.points=maxPts(g,S);
+  return S;
+}
+function garrTarget(p){return Math.max(.06,p.pop/250)*(p.border?1.8:1);}
+function maxPts(g,S){return Math.min(16,4+Math.ceil(psOf(g,S).length/5));}
+function needGarr(g,p){return g.threat/100*p.pop/95;}
+function newGame(sc){
+  const g={sc,startYear:sc.year,year:sc.year,threat:sc.threat,log:[],hist:[],provs:[],by:{},states:[],sb:{},sn:0,dyn:0,uni:true,
+    sel:null,player:null,autoGov:true,peak:0};
+  PROV.forEach(d=>{
+    const mult=(sc.mult&&sc.mult[d.zhou])||1, base=d.share*mult, pop=base*sc.scale;
+    const j=()=>(rnd()-.5)*10;
+    const p=Object.assign({},d,{base,pop,farm:clamp(sc.farm+d.fa+j()/2,15,95),order:clamp(sc.order+j(),20,90),
+      clan:clamp(sc.clan+j(),5,95),edu:8,dike:20+Math.round(rnd()*15),garr:Math.max(.06,pop/250)*(d.border?1.8:1),
+      rebel:false,tag:'',granary:0,owner:null,rebYears:0});
+    p.granary=p.pop*18*.25;
+    g.provs.push(p);g.by[p.id]=p;
+  });
+  const defs=sc.states||[{name:'漢',provs:PROV.map(d=>d.id),cap:sc.cap,cor:sc.corruption,tre:sc.treasury}];
+  defs.forEach(d=>{
+    const ids=expandIds(d.provs);
+    const pop=ids.reduce((a,id)=>a+g.by[id].pop,0);
+    const S=mkState(g,d.name,ids,d.tre!=null?d.tre:Math.round((sc.tpp||3)*pop),d.cor!=null?d.cor:15);
+    if(d.cap)S.capital=d.cap;
+    if(d.me||g.player===null)g.player=S.id;
+  });
+  g.uni=defs.length===1;
+  g.sel=g.sb[g.player].capital;
+  expandIds(sc.rebels||[]).forEach(id=>{if(rnd()<(sc.rebelRate||1)){const p=g.by[id];p.rebel=true;p.rebYears=0;p.order=Math.min(p.order,26);p.garr*=.7;}});
+  g.log.push({y:g.year,t:'info',m:`${yearLabel(g.year)}、${sc.label}。${sc.note}`});
+  snap(g);
+  return g;
+}
+function totals(g,S){
+  let pop=0,ow=0,gar=0,rebels=0,clan=0,n=0;
+  for(const p of g.provs){
+    if(S&&p.owner!==S.id)continue;
+    n++;pop+=p.pop;ow+=p.order*p.pop;gar+=p.garr;clan+=p.clan*p.pop;if(p.rebel)rebels++;
+  }
+  return {pop,order:pop?ow/pop:0,gar,rebels,clan:pop?clan/pop:0,n};
+}
+function snap(g){
+  const all=totals(g),S=g.sb[g.player],t=totals(g,S);
+  g.peak=Math.max(g.peak,all.pop);
+  g.hist.push({y:g.year,pop:all.pop,order:t.order,treasury:S.treasury,m:S.m,terr:t.n});
+  if(g.hist.length>400)g.hist.shift();
+}
+function slog(g,S,t,m){
+  const mine=S.id===g.player;
+  if(!mine&&t!=='warn')return;
+  g.log.unshift({y:g.year,t,m:(mine?'':`【${S.name}】`)+m});
+}
+function glog(g,p,t,m){slog(g,g.sb[p.owner],t,m);}
+const ACTS={
+ kai:{label:'開墾・屯田',pt:1,cost:p=>.6*p.pop+100,desc:'開発度が上がる。民心-1',run:(g,p)=>{p.farm=Math.min(95,p.farm+5*(1-p.farm/110));p.order=clamp(p.order-1,0,100);}},
+ dike:{label:'治水工事',pt:1,cost:p=>.7*p.pop+120,desc:'治水度+15。洪水に備える',run:(g,p)=>{p.dike=clamp(p.dike+15,0,100);}},
+ relief:{label:'賑恤(救済)',pt:1,cost:p=>p.pop*18*.06,desc:'穀倉を補い、民心+6',run:(g,p)=>{p.granary=Math.min(p.pop*18*.6,p.granary+p.pop*18*.06);p.order=clamp(p.order+6,0,100);}},
+ troops:{label:'増兵',pt:1,cost:p=>.3*p.pop+60,desc:'守備兵が増える。維持費も増す',run:(g,p)=>{p.garr+=Math.max(.08,p.pop/400);}},
+ clan:{label:'豪族を抑える',pt:1,cost:p=>.3*p.pop+80,desc:'豪族-14。民心-2、反発の恐れ',run:(g,p)=>{p.clan=clamp(p.clan-14,0,100);p.order=clamp(p.order-2,0,100);
+   if(p.clan>45&&rnd()<.4){p.order=clamp(p.order-5,0,100);glog(g,p,'warn',`${p.name}の豪族が反発し、民心が揺らいだ。`);}}},
+ school:{label:'学校を設ける',pt:1,cost:p=>.4*p.pop+100,desc:'儒学を広める。民心+3、豪族-3',run:(g,p)=>{p.edu=clamp(p.edu+10,0,100);p.order=clamp(p.order+3,0,100);p.clan=clamp(p.clan-3,0,100);}},
+ crush:{label:'反乱を討伐',pt:1,cost:p=>.5*p.pop+200,desc:'今すぐ鎮圧を試みる',only:'rebel',run:(g,p)=>{
+   const pr=clamp(.4+p.garr/(p.pop/120+1)*.3,.2,.9);
+   if(rnd()<pr){p.rebel=false;p.order=45;p.pop*=.94;glog(g,p,'good',`${p.name}の反乱を討伐した。`);}
+   else{p.garr*=.7;glog(g,p,'bad',`${p.name}の討伐は失敗し、兵を失った。`);}}}
+};
+
+function natCost(S,k){const rv=S.last.revenue||6000;return k==='purge'?Math.round(300+rv*.04):Math.round(2000+rv*.25);}
+function doPurge(g,S){S.corruption=clamp(S.corruption-12,0,100);slog(g,S,'good','官吏の粛正を行い、腐敗が改まった。');}
+function doExped(g,S){
+  const bs=psOf(g,S).filter(p=>p.border&&!p.rebel),gar=bs.reduce((a,p)=>a+p.garr,0),pr=clamp(.3+gar/14,.2,.9);
+  if(!bs.length)return;
+  if(rnd()<pr){g.threat=clamp(g.threat-32,5,100);bs.forEach(p=>{p.garr*=.9;p.pop*=.99;});slog(g,S,'good','匈奴遠征が成功し、北辺の脅威は大きく退いた。');}
+  else{g.threat=clamp(g.threat-6,5,100);bs.forEach(p=>{p.garr*=.65;p.order=clamp(p.order-6,0,100);});slog(g,S,'bad','匈奴遠征は不首尾に終わり、多くの兵を失った。');}
+}
+function aiGovern(g,S){
+  const ps=psOf(g,S);if(!ps.length)return;
+  const t=totals(g,S),L=S.last;
+  const exp=(L.army+L.officials+L.court+L.tribute)||2000;
+  const rev=L.revenue||exp;
+  const reserve=Math.max(150,exp*1.0);
+  // 税: 資金が足りなければ上げ、余裕があれば下げる(民心が低いときは上げない)
+  let tx=Math.round(S.tax*100);
+  const needMoney=S.treasury<exp*1.5||((L.net||0)<0&&S.treasury<exp*4);
+  if(needMoney){if(t.order>35)tx+=1;}
+  else if(S.treasury>exp*8+5000)tx-=1;
+  else if(t.order<45&&S.treasury>exp*3)tx-=1;
+  S.tax=clamp(tx,5,18)/100;
+  S.corvee=t.order<50?0:(t.order>66&&S.treasury>exp*2?2:1);
+  S.salt=S.treasury<exp*1.2&&t.order>48;
+  S.sell=S.treasury<exp*.3&&S.corruption<60&&t.order>40;
+  const bps=ps.filter(p=>p.border&&!p.rebel);
+  const bg=bps.reduce((a,p)=>a+p.garr,0),bpop=bps.reduce((a,p)=>a+p.pop,0);
+  const maxPress=bps.reduce((a,p)=>Math.max(a,p.press||0),0);
+  if(S.nomad||!bps.length)S.heqin=false;
+  else if((g.threat>55&&bg<bpop/95)||maxPress>=1.5)S.heqin=true;
+  else if(g.threat<30&&maxPress<.5)S.heqin=false;
+  const mp=maxPts(g,S);S.points=clamp(Math.round(mp*S.ruler*(1-S.corruption/160)),1,mp);
+  const buy=(k,p,free)=>{
+    const a=ACTS[k],c=a.cost(p);
+    if(S.points<a.pt||S.treasury-c<(free?0:reserve))return false;
+    S.treasury-=c;S.points-=a.pt;a.run(g,p);return true;
+  };
+  if(S.corruption>45&&S.points>0){const c=natCost(S,'purge');if(S.treasury-c>=reserve){S.treasury-=c;S.points--;doPurge(g,S);}}
+  if(!S.nomad&&g.threat>70&&S.points>=2&&bps.length&&bg>=6){
+    const pr=clamp(.3+bg/14,.2,.9),c=natCost(S,'exped');
+    if(pr>=.55&&S.treasury-c>=reserve*2){S.treasury-=c;S.points-=2;doExped(g,S);}
+  }
+  const foe=p=>{let f=0;for(const id of NB[p.id]){const q=g.by[id];if(q.owner!==S.id)f+=q.garr*.6;}return f;};
+  let guard=0,troopN=0;const used=new Set(),troopCap=Math.ceil(mp*.4);
+  while(S.points>0&&guard++<40){
+    let best=null,bs=0;
+    for(const p of ps){
+      const opts=[],w=Math.min(1.5,.6+p.pop/150);
+      if(p.rebel){const pr=clamp(.4+p.garr/(p.pop/120+1)*.3,.2,.9);opts.push(pr>=.5?['crush',95,true,true]:['troops',90,true,true]);}
+      else{
+        if(p.border&&!S.nomad&&(p.press||0)>=1)opts.push(['troops',80,false,true]);
+        if(p.order<40)opts.push(['relief',60+(40-p.order),true]);
+        else if(p.order<55&&p.granary<p.pop*18*.08)opts.push(['relief',45,false]);
+        if(p.border&&!S.nomad&&g.threat>35&&p.garr<needGarr(g,p))opts.push(['troops',50+g.threat/20,false]);
+        const f=foe(p);if(f>0&&p.garr<f*.5)opts.push(['troops',52,false]);
+        if(p.river&&p.dike<30)opts.push(['dike',45,false]);else if(p.river&&p.dike<45)opts.push(['dike',28*w,false]);
+        if(p.clan>65)opts.push(['clan',40+(p.clan-65)/2,false]);
+        if(p.farm<70)opts.push(['kai',(20+(70-p.farm)/4)*w,false]);
+        if(p.edu<40)opts.push(['school',(18+(S.corruption>40?5:0))*w,false]);
+      }
+      for(const [k,sc,free,emg] of opts){
+        if(used.has(k+p.id))continue;
+        if(k==='troops'&&!emg&&troopN>=troopCap)continue;
+        const c=ACTS[k].cost(p);
+        if(S.treasury-c<(free?0:reserve))continue;
+        if(sc>bs){bs=sc;best=[k,p,free,emg];}
+      }
+    }
+    if(!best)break;
+    if(buy(best[0],best[1],best[2])){used.add(best[0]+best[1].id);if(best[0]==='troops'&&!best[3])troopN++;}else break;
+  }
+}
+function yearState(g,S,evs){
+  const quiet=S.id!==g.player,pre=quiet?`【${S.name}】`:'';
+  const E=(t,m,major)=>{if(!quiet||major)evs.push([t,pre+m]);};
+  const tx=S.tax;let revenue=0;
+  let ps=psOf(g,S);
+  S.reign++;
+  if(S.reign>=20+Math.floor(rnd()*15)){
+    S.reign=0;S.ruler=.45+rnd()*.7;
+    E(S.ruler<.65?'warn':'info',S.ruler<.65?'代替わり。新しい君主は凡庸で、朝政が乱れがちになった。':'代替わり。新しい君主が即位した。');
+  }
+  if(ps.length>=4&&S.corruption>45&&rnd()<.012+.0006*(S.corruption-45)){
+    const cand=ps.filter(p=>!p.rebel).sort((a,b)=>a.order-b.order).slice(0,Math.max(2,Math.round(ps.length*.15)));
+    cand.forEach(p=>{p.rebel=true;p.rebYears=0;p.garr*=.7;E('bad',`${p.name}で${rebelName(g.year)}が起こった。`,true);});
+    if(cand.length)E('warn','朝廷の内紛に乗じて、各地で反乱の火の手が上がった。',true);
+  }
+  if(rnd()<.012){ps.forEach(p=>{p.pop*=.95;});E('bad','疫病が流行し、各地で多くの人が亡くなった。');}
+  const sec=[];
+  const dis={};const D=(k,n)=>{(dis[k]=dis[k]||[]).push(n);};
+  for(const p of ps){
+    let w=.92+rnd()*.16;p.tag='';
+    if(p.river&&rnd()<.07*(1-p.dike/130)){
+      const loss=(.01+rnd()*.025)*(1-p.dike/150),lost=p.pop*loss;p.pop-=lost;p.farm=Math.max(10,p.farm-3);w*=.7;p.tag+='洪';
+      D('洪水',p.name);}
+    if(rnd()<.07){w*=.65+rnd()*.15;p.tag+='旱';D('旱魃',p.name);}
+    if(rnd()<.04){w*=.75;p.tag+='蝗';D('蝗害',p.name);}
+    if(rnd()<.015){p.pop*=.985;p.tag+='震';D('地震',p.name);}
+    if(p.rebel){
+      p.rebYears=(p.rebYears||0)+1;
+      p.pop*=.98;p.order=Math.min(p.order,32);p.farm=Math.max(10,p.farm-1.5);
+      const sup=clamp(.1+p.garr/(p.pop/120+1)*.25,.05,.85);
+      if(rnd()<sup){p.rebel=false;p.rebYears=0;p.order=42;p.pop*=.94;p.garr*=.8;E('good',`${p.name}の反乱を鎮圧した。`,true);}
+      else{p.garr*=.9;if(p.rebYears>=3&&ps.length>1&&rnd()<.5)sec.push(p);}
+      continue;
+    }
+    const need=p.pop*18,Kc=p.base*1.1*(.5+p.farm/100),c=p.pop/Kc;
+    const pp=(12+p.farm*.2)*clamp(1.25-.5*c,.4,1.3);
+    const harvest=p.pop*pp*w,eff=tx*(1-.55*p.clan/100);
+    const tax=harvest*eff;
+    let r=harvest*(1-eff)/need;
+    if(r<1){const use=Math.min(p.granary,need-harvest*(1-eff));p.granary-=use;r+=use/need;}
+    else{p.granary=Math.min(need*.6,p.granary+(harvest*(1-eff)-need)*.12);}
+    const gr=.016*clamp((r-1)*4,-3,1);
+    p.pop*=1+gr;
+    if(r<.85)D('飢饉',p.name);
+    let tgt=74-(tx-.10)*160-S.corvee*7-p.clan*.14-S.corruption*.12+p.edu*.08+(S.salt?-4:0)+(r<1?(r-1)*60:0)-(p.tag?3:0);
+    tgt=clamp(tgt,5,95);
+    let no=p.order+(tgt-p.order)*.3;
+    NB[p.id].forEach(id=>{if(g.by[id].rebel)no-=2.5;});
+    p.order=clamp(no,0,100);
+    p.clan=clamp(p.clan+1.2+S.corruption*.01-p.edu*.012-(S.salt?.5:0)+(p.order<40?.4:0),0,100);
+    p.farm=clamp(p.farm+(p.order>50?.25:p.order>35?.05:-.2)+S.corvee*.35*(1-p.farm/110),10,95);
+    p.dike=clamp(p.dike-.6+S.corvee*.7,0,100);
+    p.edu=clamp(p.edu-.3,0,100);
+    if(S.unpaid===0&&S.treasury>0){const tg=garrTarget(p)*(S.nomad?1.3:1);if(p.garr<tg)p.garr=Math.min(tg,p.garr+(tg-p.garr)*.08+.01);}
+    revenue+=tax;
+    if(ps.length>2&&p.order<28&&rnd()<(28-p.order)/28*.6+.05){
+      p.rebel=true;p.rebYears=0;p.garr*=.7;E('bad',`${p.name}で${rebelName(g.year)}が起こった。`,true);}
+  }
+  for(const k of Object.keys(dis)){const a=dis[k];E('bad',`${k}:${a.slice(0,3).join('・')}${a.length>3?`ほか${a.length-3}郡`:''}`);}
+  // 反乱勢力の独立
+  let left=ps.length;
+  for(const p of sec){
+    if(left<=1)break;if(!p.rebel)continue;
+    const nm=pickName(g,p.nm||p.name);
+    const N=mkState(g,nm,[p.id],400+p.pop*2,15);
+    p.rebel=false;p.rebYears=0;p.order=45;N.capital=p.id;left--;
+    if(S.capital===p.id){S.capital=null;setCapital(g,S);}
+    evs.push(['warn',`${pre}${p.name}の反乱勢力が独立し、「${nm}」を建国した。`]);
+  }
+  ps=psOf(g,S);
+  if(S.salt)revenue*=1.10;
+  if(S.sell)revenue*=1.04;
+  const army=ps.reduce((a,p)=>a+p.garr,0)*190,officials=revenue*.08,court=revenue*.10*(1+S.corruption/100)*(1+clamp(g.year-S.born,0,200)*.007)*(S.nomad?.6:1),tribute=S.heqin?revenue*.015:0;
+  const net=revenue-army-officials-court-tribute;
+  S.last={revenue,army,officials,court,tribute,net};
+  S.treasury+=net;
+  let edu=0;ps.forEach(p=>{edu+=p.edu;});edu/=Math.max(1,ps.length);
+  S.corruption=clamp(S.corruption+(1.2+(1-S.ruler)*2)*(S.nomad?.6:1)+(S.sell?3:0)-edu*.03,0,100);
+  if(S.corruption>50&&rnd()<.04){S.corruption=clamp(S.corruption+8,0,100);E('warn','外戚・権臣が朝政を壟断し、官界の腐敗が進んだ。');}
+  if(S.treasury<0){S.treasury=0;S.unpaid++;ps.forEach(p=>{p.garr*=.85;p.order=clamp(p.order-3,0,100);});
+    E('bad','国庫が尽き、俸禄と軍糧が滞った。兵が逃げ出している。');}else S.unpaid=0;
+  const tt=totals(g,S),exp=army+officials+court+tribute;
+  const runway=exp>0?clamp(S.treasury/(exp*1.5),0,1)*100:100;
+  S.m=clamp(.5*tt.order+.2*(100-S.corruption)+.15*(100-g.threat)+.15*runway-6*tt.rebels,0,100);
+  S.lowM=S.m<35?S.lowM+1:0;
+}
+function checkCollapse(g,S){
+  const ps=psOf(g,S);if(ps.length<2)return null;
+  const t=totals(g,S);
+  if(S.corruption>85&&t.clan>70&&!S.nomad&&rnd()<.08)return ['dyn',''];
+  if(ps.length<6)return null;
+  if(t.rebels>=Math.max(2,Math.ceil(ps.length*.3)))return ['split','天下大乱'];
+  if(S.unpaid>=4)return ['split','軍の崩壊'];
+  if(S.lowM>=3)return ['split','天命は去った'];
+  return null;
+}
+function changeDynasty(g,S,evs){
+  const old=S.name;
+  let nm=old==='魏'?'晋':(old==='漢'&&g.year>100)?'魏':DYN[g.dyn%DYN.length];g.dyn++;
+  if(nm===old){nm=DYN[g.dyn%DYN.length];g.dyn++;}
+  nm=pickName(g,nm);
+  S.name=nm;S.corruption=25;S.lowM=0;S.unpaid=0;S.born=g.year;
+  psOf(g,S).forEach(p=>{p.clan=clamp(p.clan-15,0,100);p.order=clamp(p.order+8,0,100);});
+  evs.push(['warn',`王朝交代。外戚と権臣が帝位を奪い、${old}に代わって「${nm}」が興った。`]);
+}
+function splitState(g,S,reason,evs){
+  const ps=psOf(g,S),n=ps.length,k=clamp(Math.round(n/3),2,4);
+  const ids=new Set(ps.map(p=>p.id));
+  const bfs=src=>{const d={};d[src]=0;const q=[src];while(q.length){const a=q.shift();NB[a].forEach(b=>{if(ids.has(b)&&d[b]===undefined){d[b]=d[a]+1;q.push(b);}});}return d;};
+  const sorted=ps.slice().sort((a,b)=>b.pop*(b.rebel?.6:1)-a.pop*(a.rebel?.6:1));
+  const seeds=[sorted[0].id],dists=[bfs(sorted[0].id)];
+  while(seeds.length<k){
+    let best=null,bv=-1;
+    for(const p of sorted){
+      if(seeds.includes(p.id))continue;
+      const md=Math.min(...dists.map(d=>d[p.id]===undefined?9:d[p.id]));
+      if(md>bv){bv=md;best=p;}
+    }
+    if(!best)break;seeds.push(best.id);dists.push(bfs(best.id));
+  }
+  const groups=seeds.map(()=>[]);
+  ps.forEach(p=>{
+    let bi=-1,bd=99;
+    dists.forEach((d,i)=>{const v=d[p.id]===undefined?99:d[p.id];if(v<bd){bd=v;bi=i;}});
+    if(bi<0||bd===99)groups.push([p]);else groups[bi].push(p);
+  });
+  const total=ps.reduce((a,p)=>a+p.pop,0),color=S.color,wasPlayer=S.id===g.player;
+  S.alive=false;S.died=g.year;
+  const made=[];
+  groups.forEach(gr=>{
+    gr.sort((a,b)=>b.pop-a.pop);
+    const pop=gr.reduce((a,p)=>a+p.pop,0);
+    const nm=pickName(g,gr[0].nm||gr[0].name);
+    const N=mkState(g,nm,gr.map(p=>p.id),Math.max(S.treasury*(pop/total)*.6,200+pop*2),S.corruption*.6);
+    N.tax=S.tax;N.capital=gr[0].id;
+    gr.forEach(p=>{p.rebel=false;p.rebYears=0;p.order=Math.max(p.order,40);});
+    made.push({N,pop});
+  });
+  made.sort((a,b)=>b.pop-a.pop);
+  made[0].N.color=color;
+  evs.push(['bad',`【${reason}】${S.name}は滅び、天下は${made.map(m=>m.N.name).join('・')}に分かれた。`]);
+  if(wasPlayer){g.player=made[0].N.id;g.sel=made[0].N.capital;evs.push(['info',`操作する国を「${made[0].N.name}」に切り替えました。`]);}
+}
+function surrender(g,S,evs){
+  const adj=new Set();
+  psOf(g,S).forEach(p=>NB[p.id].forEach(id=>{const q=g.by[id];if(q.owner!==S.id)adj.add(q.owner);}));
+  let B=null,bs=-1;
+  adj.forEach(id=>{const T=g.sb[id],v=strength(g,T);if(v>bs){bs=v;B=T;}});
+  if(!B)return;
+  psOf(g,S).forEach(p=>{p.owner=B.id;p.order=Math.max(p.order,45);});
+  B.treasury+=S.treasury*.3;S.alive=false;S.died=g.year;
+  evs.push(['warn',`${S.name}は${B.name}に降った。`]);
+  if(g.player===S.id){g.player=B.id;g.sel=B.capital;evs.push(['info',`操作する国を「${B.name}」に切り替えました。`]);}
+}
+const HU={'匈奴':['前趙','夏','北涼','漢趙'],'鮮卑':['前燕','後燕','西燕','南燕','代','西秦','南涼'],'羯':['後趙'],'氐':['前秦','後涼','成漢','仇池'],'羌':['後秦']};
+function pickTribe(p){
+  const r=rnd();
+  if(p.zhou==='you')return r<.85?'鮮卑':'匈奴';
+  if(p.zhou==='bing')return r<.6?'匈奴':r<.85?'羯':'鮮卑';
+  return r<.4?'氐':r<.8?'羌':'匈奴';
+}
+function huName(g,tribe){
+  const used=new Set(g.states.filter(x=>x.alive).map(x=>x.name));
+  const list=HU[tribe]||['夏'],free=list.filter(n=>!used.has(n));
+  return free.length?free[Math.floor(rnd()*free.length)]:pickName(g,list[0]);
+}
+function nomadFall(g,p,evs){
+  const old=g.sb[p.owner];
+  const adjN=NB[p.id].map(id=>g.by[id]).find(q=>g.sb[q.owner].nomad&&q.owner!==old.id);
+  p.press=0;p.rebel=false;p.rebYears=0;p.order=Math.min(p.order,45);p.garr*=.9;
+  let N;
+  if(adjN){N=g.sb[adjN.owner];p.owner=N.id;evs.push(['bad',`${N.tribe}の「${N.name}」が${old.name}の${p.name}を奪った。`]);}
+  else{
+    const tribe=pickTribe(p),name=huName(g,tribe);
+    N=mkState(g,name,[p.id],300+p.pop*2,10);
+    N.nomad=true;N.tribe=tribe;N.ruler=.8+rnd()*.4;N.tax=.08;N.capital=p.id;
+    g.threat=Math.max(5,g.threat-10);
+    evs.push(['bad',`【五胡の乱】${tribe}が${old.name}の${p.name}を奪い、「${name}」を建国した。`]);
+  }
+  if(old.capital===p.id){old.capital=null;setCapital(g,old);}
+  if(!psOf(g,old).length){
+    old.alive=false;old.died=g.year;evs.push(['bad',`${old.name}は滅亡した。`]);
+    if(g.player===old.id){g.player=N.id;g.sel=N.capital;evs.push(['info',`操作する国を「${N.name}」に切り替えました。`]);}
+  }
+}
+function strength(g,S){let s=0;for(const p of psOf(g,S))s+=p.garr*(p.rebel?.3:1)*(.7+p.order/200);return s;}
+function battle(g,A,B,target,evs){
+  const sa=strength(g,A),sb=strength(g,B);
+  A.treasury-=Math.min(A.treasury,300+sa*60);
+  const atk=sa*.45*(.8+rnd()*.4),def=target.garr*1.5+sb*.12;
+  if(atk>def*(.8+rnd()*.4)){
+    const took=[];
+    const take=t=>{t.owner=A.id;t.pop*=.96;t.order=Math.min(t.order,38);t.garr*=.6;t.rebel=false;t.rebYears=0;took.push(t.name);if(B.capital===t.id)B.capital=null;};
+    take(target);
+    while(took.length<4&&rnd()<.55){
+      const nx=g.provs.filter(q=>q.owner===B.id&&adjacentToState(g,A,q)).sort((a,b)=>a.garr-b.garr)[0];
+      if(!nx)break;take(nx);
+    }
+    psOf(g,A).forEach(p=>{p.garr*=.97;});
+    evs.push(['warn',`${A.name}が${B.name}の${took.join('・')}を攻め取った。`]);
+    if(!B.capital)setCapital(g,B);
+    if(!psOf(g,B).length){
+      B.alive=false;B.died=g.year;evs.push(['bad',`${B.name}は滅亡した。`]);
+      if(g.player===B.id){g.player=A.id;g.sel=A.capital;evs.push(['info',`操作する国を「${A.name}」に切り替えました。`]);}
+    }
+    return true;
+  }
+  psOf(g,A).forEach(p=>{p.garr*=.92;});
+  evs.push(['info',`${A.name}の${B.name}攻めは失敗に終わった。`]);
+  return false;
+}
+function warCost(g,A){return Math.round(300+strength(g,A)*60);}
+function adjacentToState(g,A,target){return target.owner!==A.id&&NB[target.id].some(id=>g.by[id].owner===A.id);}
+function wars(g,evs){
+  if(livingStates(g).length<2)return;
+  const done=new Set();
+  const order=livingStates(g).sort(()=>rnd()-.5);
+  for(const A of order){
+    if(!A.alive||done.has(A.id))continue;
+    if(A.id===g.player&&!g.autoGov)continue;
+    if(A.treasury<200||(A.m<30&&!A.nomad))continue;
+    const sa=strength(g,A),cand=new Map();
+    for(const p of g.provs){
+      if(p.owner!==A.id)continue;
+      for(const id of NB[p.id]){const q=g.by[id];if(q.owner!==A.id)cand.set(q.id,q);}
+    }
+    let best=null,bs=0,bodds=0;const cache={};
+    cand.forEach(q=>{
+      const B=g.sb[q.owner];if(done.has(B.id))return;
+      if(cache[B.id]===undefined)cache[B.id]=strength(g,B);
+      const def=q.garr*1.5+cache[B.id]*.12,odds=sa*.45/Math.max(.05,def);
+      const sc=odds*q.pop*(q.order/100+.5)*(B.capital===q.id?1.5:1);
+      if(odds>=1.1&&sc>bs){bs=sc;best=q;bodds=odds;}
+    });
+    if(!best)continue;
+    const B=g.sb[best.owner];
+    const pw=clamp(.04+.1*(bodds-1.1),.04,.3)*(A.nomad?1.5:1)*(A.m<40?.5:1);
+    if(rnd()>=pw)continue;
+    done.add(A.id);done.add(B.id);
+    battle(g,A,B,best,evs);
+  }
+}
+function step(g){
+  const evs=[],yr=g.year;
+  for(const S of livingStates(g))if(S.id!==g.player||g.autoGov)aiGovern(g,S);
+  for(const S of livingStates(g))yearState(g,S,evs);
+  // 匈奴
+  const bl=g.provs.filter(p=>p.border&&!p.rebel&&!g.sb[p.owner].nomad),pr=g.threat/100*.55*Math.min(1,3/Math.max(1,bl.length)),invd={};
+  g.provs.forEach(p=>{if(p.border)p.press=Math.max(0,(p.press||0)-.1);});
+  bl.forEach(p=>{const S=g.sb[p.owner];if(g.threat>55&&(S.m<40||S.unpaid>0||p.order<40||p.garr<needGarr(g,p)*.7))p.press=(p.press||0)+.6*g.threat/100;});
+  bl.forEach(p=>{
+    if(rnd()<pr){
+      const S=g.sb[p.owner],o=(invd[p.owner]=invd[p.owner]||{rep:[],hit:[],lost:0}),str=needGarr(g,p);
+      if(p.garr>=str){g.threat=Math.max(5,g.threat-1);p.press=Math.max(0,(p.press||0)-1);o.rep.push(p.name);}
+      else{
+        const loss=.03*(1-clamp(p.garr/str,0,1)*.6),lost=p.pop*loss;p.pop-=lost;p.order=clamp(p.order-6,0,100);
+        p.farm=Math.max(10,p.farm-2);p.garr*=.85;o.hit.push(p.name);o.lost+=lost;
+        p.press=(p.press||0)+1.2+(S.m<45?1:0)+(p.garr<str*.5?.5:0);
+      }
+    }
+  });
+  if(invd[g.player]){const o=invd[g.player];
+    if(o.hit.length)evs.push(['bad',`匈奴が侵入。被害:${o.hit.slice(0,3).join('・')}${o.hit.length>3?`ほか${o.hit.length-3}郡`:''}(約${fmt(o.lost)}万人)`]);
+    if(o.rep.length)evs.push(['good',`匈奴の侵入を撃退:${o.rep.slice(0,3).join('・')}${o.rep.length>3?`ほか${o.rep.length-3}郡`:''}`]);}
+  const paying=livingStates(g).some(S=>S.heqin&&psOf(g,S).some(p=>p.border));
+  g.threat=clamp(g.threat+(paying?-4:2.5)+(livingStates(g).filter(x=>!x.nomad).length>=4?1.5:0),5,100);
+  // 草原の大連合
+  if(rnd()<.025&&g.provs.some(p=>p.border&&!g.sb[p.owner].nomad)){
+    g.threat=clamp(g.threat+30,5,100);
+    evs.push(['warn','【北方の動乱】遊牧民に大首領が現れ、諸部族が結集した。辺境の脅威が急増している。']);
+  }
+  // 五胡の乱
+  g.provs.filter(p=>p.border&&!g.sb[p.owner].nomad&&((p.press||0)>=3||(p.rebel&&g.threat>60&&rnd()<.08))).forEach(p=>nomadFall(g,p,evs));
+  // 崩壊と王朝交代
+  for(const S of livingStates(g)){
+    const c=checkCollapse(g,S);
+    if(!c)continue;
+    if(c[0]==='dyn')changeDynasty(g,S,evs);else splitState(g,S,c[1],evs);
+  }
+  for(const S of livingStates(g)){if(S.alive&&S.id!==g.player&&S.lowM>=2&&psOf(g,S).length<=3&&livingStates(g).length>1)surrender(g,S,evs);}
+  wars(g,evs);
+  for(const S of livingStates(g))S.points=maxPts(g,S);
+  const ls=livingStates(g);
+  if(ls.length===1&&!g.uni){g.uni=true;evs.push(['good',`${ls[0].name}が天下を統一した。`]);}
+  if(ls.length>1)g.uni=false;
+  g.year++;if(g.year===0)g.year=1;
+  g.log=evs.map(e=>({y:yr,t:e[0],m:e[1]})).concat(g.log).slice(0,200);
+  if(g.year%10===0)g.log.unshift({y:g.year,t:'info',m:`戸口調査。天下の総人口は約${fmt(totals(g).pop)}万人。`});
+  snap(g);
+}
+/*CORE_END*/
+const GEO={"w":100,"h":115.9,"z":{"jingzhao":{"d":"M46.8,38.6L48.2,45.8L40.0,44.8L35.6,44.8L37.3,42.8L42.0,38.8L41.9,37.1L46.0,35.8L46.8,38.6Z","lx":43.5,"ly":40.8,"area":68.6},"hongnong":{"d":"M46.8,38.6L53.5,41.0L53.2,45.0L49.5,46.0L48.2,45.8L46.8,38.6Z","lx":50.5,"ly":43.0,"area":33.1},"henan":{"d":"M53.5,41.0L54.8,36.6L58.4,43.6L58.3,44.0L53.2,45.0L53.5,41.0Z","lx":55.0,"ly":38.8,"area":23.7},"henei":{"d":"M58.4,43.6L54.8,36.4L55.3,36.8L58.0,36.5L59.3,36.8L59.0,41.6L58.4,43.6Z","lx":57.6,"ly":39.2,"area":16.7},"hedong":{"d":"M54.8,36.4L53.5,41.0L46.8,38.6L46.0,35.8L48.8,35.2L51.9,33.6L54.8,36.4Z","lx":50.5,"ly":37.6,"area":39.6},"yingchuan":{"d":"M61.4,45.8L60.7,46.5L57.3,45.0L57.3,44.2L58.3,44.0L59.0,41.3L60.4,41.4L60.3,42.0L62.2,42.0L61.4,45.8Z","lx":60.3,"ly":43.0,"area":15.6},"runan":{"d":"M61.4,45.8L67.5,48.3L67.7,48.7L64.4,51.6L62.6,51.9L62.0,47.2L60.7,46.5L61.4,45.8Z","lx":64.8,"ly":48.9,"area":20.1},"chenguo":{"d":"M62.2,42.0L63.9,42.0L67.4,46.4L67.5,48.3L61.4,45.8L62.2,42.0Z","lx":63.6,"ly":43.9,"area":21.3},"liangguo":{"d":"M67.4,46.4L63.9,42.0L69.0,42.0L67.4,46.4Z","lx":66.9,"ly":44.2,"area":11.2},"peiguo":{"d":"M67.7,48.7L67.4,46.4L69.0,42.0L72.2,42.0L73.1,41.4L72.2,43.6L70.2,46.4L67.7,48.7Z","lx":69.5,"ly":45.0,"area":18.8},"weijun":{"d":"M67.7,34.2L64.4,36.8L61.7,37.6L60.3,36.8L60.5,35.0L60.7,34.8L60.8,31.1L67.7,34.2Z","lx":64.0,"ly":34.5,"area":27.1},"julu":{"d":"M60.8,31.1L61.0,27.5L66.1,28.0L67.3,30.1L68.0,34.0L67.7,34.2L60.8,31.1Z","lx":64.1,"ly":30.6,"area":30.9},"zhongshan":{"d":"M66.1,28.0L61.0,27.5L60.6,24.4L60.7,23.2L61.1,21.7L62.3,21.2L64.4,22.8L66.5,22.8L66.1,28.0Z","lx":63.5,"ly":25.9,"area":30.7},"hejian":{"d":"M67.3,30.1L66.1,28.0L66.5,22.8L71.9,23.0L67.3,30.1Z","lx":68.3,"ly":25.5,"area":23.8},"bohai":{"d":"M67.3,30.1L71.9,23.0L74.6,23.1L73.8,23.4L73.1,25.2L73.4,26.3L74.4,27.1L73.2,28.0L68.0,34.0L67.3,30.1Z","lx":70.2,"ly":29.1,"area":33.5},"chenliu":{"d":"M65.8,40.4L66.0,42.0L60.3,42.0L60.7,37.6L61.1,37.2L61.9,37.5L65.8,40.4Z","lx":62.2,"ly":39.0,"area":18.2},"dongjun":{"d":"M68.2,35.3L65.8,40.4L61.9,37.5L64.4,36.8L67.9,34.0L68.2,35.3Z","lx":65.2,"ly":37.1,"area":15.5},"shanyang":{"d":"M65.8,40.4L68.2,35.3L73.9,40.8L72.2,42.0L66.0,42.0L65.8,40.4Z","lx":68.9,"ly":37.8,"area":31.2},"taishan":{"d":"M68.2,35.3L67.9,34.0L68.5,33.6L72.9,32.4L75.6,35.2L75.3,40.0L73.9,40.8L68.2,35.3Z","lx":73.0,"ly":37.6,"area":38.5},"pingyuan":{"d":"M70.8,32.9L68.5,33.6L72.2,29.2L70.8,32.9Z","lx":71.1,"ly":31.1,"area":4.0},"jinan":{"d":"M72.2,29.2L73.2,28.0L74.4,27.1L75.6,27.4L75.1,34.6L72.9,32.4L70.8,32.9L72.2,29.2Z","lx":73.5,"ly":30.8,"area":19.8},"beihai":{"d":"M75.6,27.4L77.3,27.5L77.8,27.8L78.3,29.2L77.9,29.4L77.8,30.7L78.9,31.4L80.3,31.4L81.9,35.2L81.7,35.5L82.2,36.1L80.4,37.6L79.3,39.2L76.6,38.4L75.6,35.2L75.1,34.6L75.6,27.4Z","lx":78.1,"ly":33.1,"area":49.7},"donglai":{"d":"M80.3,31.4L81.0,31.0L81.0,30.6L82.4,29.5L82.2,29.3L83.9,28.7L86.9,30.1L88.0,30.2L88.3,29.9L89.3,30.4L90.4,30.4L90.1,30.7L90.1,31.3L89.6,31.7L89.9,32.2L89.3,32.6L89.0,32.6L88.7,32.1L87.9,32.1L84.9,33.5L84.1,33.4L84.4,34.2L83.8,34.3L83.5,35.5L82.7,35.8L82.5,35.1L81.9,35.2L80.3,31.4Z","lx":84.2,"ly":32.2,"area":35.0},"pengcheng":{"d":"M72.1,46.0L70.8,45.6L73.9,41.6L72.1,46.0Z","lx":72.1,"ly":44.6,"area":3.6},"langye":{"d":"M79.8,44.0L74.1,41.4L76.6,38.4L79.3,39.2L78.7,39.9L78.5,40.6L78.6,41.0L79.2,41.0L82.3,42.9L79.8,44.0Z","lx":76.9,"ly":41.2,"area":20.7},"xiapi":{"d":"M72.1,46.0L74.1,41.4L79.8,44.0L75.1,49.2L74.2,46.8L72.1,46.0Z","lx":75.7,"ly":45.0,"area":29.2},"guangling":{"d":"M79.8,44.0L82.3,42.9L83.1,45.4L84.3,47.9L84.2,49.3L85.0,49.8L85.4,51.2L80.0,52.4L75.6,50.8L75.1,49.2L79.8,44.0Z","lx":80.4,"ly":47.5,"area":57.4},"nanyang":{"d":"M60.2,52.0L50.0,47.5L55.9,44.4L62.0,47.2L62.4,50.1L60.2,52.0Z","lx":57.6,"ly":48.8,"area":50.1},"xiangyang":{"d":"M60.2,52.0L58.3,54.9L48.2,55.3L49.2,50.0L43.1,48.5L49.2,48.0L50.0,47.5L60.2,52.0Z","lx":53.4,"ly":51.0,"area":66.0},"jiangxia":{"d":"M58.6,61.7L58.3,54.9L60.2,52.0L62.4,50.1L63.1,56.0L65.4,62.0L63.3,64.9L58.6,61.7Z","lx":61.3,"ly":58.9,"area":61.2},"nanjun":{"d":"M47.7,58.5L48.2,55.3L58.3,54.9L58.6,61.7L57.1,62.4L47.7,58.5Z","lx":55.1,"ly":60.1,"area":58.9},"wuling":{"d":"M57.1,62.4L53.3,69.6L44.5,69.2L44.7,66.0L47.5,60.0L47.7,58.5L57.1,62.4Z","lx":50.8,"ly":64.2,"area":91.3},"changsha":{"d":"M58.6,61.7L63.3,64.9L61.0,68.0L61.5,71.9L56.2,71.9L53.3,69.6L57.1,62.4L58.6,61.7Z","lx":58.6,"ly":66.4,"area":62.9},"lingling":{"d":"M53.3,69.6L56.2,71.9L54.4,79.6L52.5,79.9L47.5,77.5L44.1,73.9L44.5,69.2L53.3,69.6Z","lx":50.5,"ly":75.7,"area":95.2},"guiyang":{"d":"M56.2,71.9L61.5,71.9L62.0,75.9L59.3,78.7L54.4,79.6L56.2,71.9Z","lx":58.8,"ly":73.9,"area":42.4},"jiujiang":{"d":"M72.0,58.2L63.0,55.7L62.8,51.8L64.4,51.6L70.4,46.1L72.7,46.2L74.2,46.8L74.6,47.9L72.0,58.2Z","lx":68.0,"ly":53.8,"area":90.5},"danyang":{"d":"M79.0,57.6L75.1,61.4L72.0,58.2L74.6,47.9L75.6,50.8L80.0,52.4L80.7,52.2L79.0,57.6Z","lx":76.3,"ly":55.0,"area":59.6},"wujun":{"d":"M79.0,57.6L80.7,52.2L83.1,51.5L81.5,52.2L82.0,52.3L83.0,51.9L83.8,52.0L84.0,52.7L84.9,53.1L87.0,54.7L87.7,56.3L86.5,56.6L85.1,57.6L79.0,57.6ZM83.1,51.5L85.0,51.2L86.8,52.0L87.6,52.7L87.7,53.1L87.1,53.1L85.9,52.5L84.7,52.5L84.0,51.8L83.1,51.5ZM87.6,53.9L87.4,54.1L86.5,53.8L85.9,53.4L85.5,52.7L86.3,52.9L86.7,53.4L87.6,53.9Z","lx":83.2,"ly":54.4,"area":38.7},"kuaiji":{"d":"M88.0,59.4L89.1,59.7L89.1,60.1L88.2,59.9L88.0,59.4ZM75.8,64.6L75.1,61.4L79.0,57.6L85.1,57.6L84.1,58.5L82.9,58.4L82.0,59.0L83.0,58.7L83.5,59.4L84.4,59.3L85.6,58.7L86.2,59.1L87.0,60.0L88.4,60.5L86.5,62.0L87.8,61.4L88.0,62.0L87.9,63.4L87.2,62.9L86.6,63.0L86.3,63.4L87.0,64.1L86.6,64.2L87.0,64.5L86.4,65.4L86.8,66.8L86.5,66.7L85.7,67.1L85.5,66.6L85.2,66.6L84.6,67.8L83.9,67.9L84.2,68.4L83.5,69.5L75.8,64.6Z","lx":81.2,"ly":63.7,"area":100.3},"yuzhang":{"d":"M72.0,58.2L75.1,61.4L75.8,64.6L64.9,80.2L62.0,75.9L61.0,68.0L65.4,62.0L63.0,55.7L72.0,58.2Z","lx":66.1,"ly":71.9,"area":200.7},"jianan":{"d":"M75.8,64.6L83.5,69.5L83.3,69.6L83.5,70.0L83.2,70.7L82.3,71.6L81.5,73.4L81.0,73.5L80.8,72.6L80.4,73.0L80.0,72.8L80.1,73.5L80.6,73.8L81.0,74.6L79.5,75.7L78.4,75.5L79.1,76.2L80.1,75.9L80.2,76.3L79.8,77.6L80.1,78.4L79.4,78.1L78.6,78.1L78.5,78.5L78.9,79.0L77.9,79.1L77.7,79.4L77.8,79.9L77.7,80.2L76.7,80.6L77.0,81.0L76.8,81.5L75.6,81.7L74.9,81.4L74.6,82.0L74.0,82.0L74.2,82.4L74.7,82.4L74.8,83.0L74.0,83.9L73.7,83.9L73.3,84.6L72.8,84.6L72.4,85.6L72.3,85.1L71.9,85.4L66.1,81.9L64.9,80.2L75.8,64.6Z","lx":74.2,"ly":75.2,"area":191.2},"shu":{"d":"M31.8,58.6L31.1,60.3L23.2,62.0L15.3,55.8L18.6,46.8L20.8,47.1L31.8,58.6Z","lx":20.9,"ly":51.4,"area":136.3},"guanghan":{"d":"M35.9,54.7L31.8,58.6L20.8,47.1L27.1,48.0L28.2,47.7L28.8,48.0L31.8,47.3L35.9,54.7Z","lx":29.5,"ly":51.3,"area":80.8},"baxi":{"d":"M31.8,58.6L35.9,54.7L48.0,56.8L47.5,60.0L45.3,63.8L33.8,68.6L31.1,60.3L31.8,58.6Z","lx":39.0,"ly":62.1,"area":152.4},"hanzhong":{"d":"M35.9,54.7L31.8,47.3L33.9,46.8L34.3,46.3L35.6,46.0L40.7,48.0L49.2,50.0L48.0,56.8L35.9,54.7Z","lx":41.7,"ly":52.3,"area":113.9},"qianwei":{"d":"M23.2,62.0L31.1,60.3L33.8,68.6L30.4,74.9L27.0,73.1L23.2,62.0Z","lx":28.5,"ly":65.3,"area":94.9},"yuexi":{"d":"M23.2,62.0L27.0,73.1L16.9,75.2L11.1,67.8L11.9,66.0L15.3,55.8L23.2,62.0Z","lx":18.2,"ly":64.0,"area":181.2},"yizhou":{"d":"M16.9,75.2L27.0,73.1L30.4,74.9L34.4,87.5L33.9,87.9L28.6,89.0L28.9,88.7L28.1,89.1L27.9,88.8L28.1,89.1L27.2,89.3L27.6,88.7L27.2,89.3L26.4,89.4L25.9,88.9L25.8,88.8L25.7,88.9L25.8,88.8L26.4,89.4L23.6,90.1L23.2,89.6L23.6,90.1L21.7,91.7L20.8,90.4L20.9,90.3L21.1,90.1L20.8,90.4L20.4,90.2L19.8,90.4L19.3,90.0L18.7,90.9L19.0,92.0L19.4,92.6L19.5,93.7L17.8,95.1L17.4,93.0L16.5,93.3L16.9,75.2ZM33.2,88.1L32.9,87.8L32.9,87.8L33.2,88.1ZM32.2,87.2L32.3,87.4L32.0,87.0L32.2,87.2ZM31.9,86.9L31.7,86.7L31.6,86.7L31.7,86.7L31.9,86.9ZM29.9,87.5L29.8,88.3L29.8,88.4L29.8,88.3L29.9,87.9L29.9,87.5L30.0,87.5L29.9,87.5ZM25.4,89.6L25.4,89.6L25.4,89.6L25.4,89.6ZM24.9,88.9L24.9,88.9L25.3,89.5L25.4,89.6L24.9,88.9ZM24.8,88.9L24.8,88.9L24.8,88.9L24.8,88.9ZM24.2,89.6L24.4,89.4L24.6,89.1L24.7,89.0L24.2,89.6ZM22.8,89.3L22.4,89.1L22.8,89.3L22.9,89.4L22.8,89.3ZM21.9,89.0L21.6,89.4L21.4,89.7L21.9,89.0Z","lx":24.5,"ly":80.9,"area":254.4},"zangke":{"d":"M30.4,74.9L33.8,68.6L45.3,63.8L40.7,71.9L42.4,79.9L34.4,87.5L30.4,74.9Z","lx":36.5,"ly":77.4,"area":172.0},"yongchang":{"d":"M16.9,75.2L16.5,93.3L15.6,94.0L14.3,94.1L14.0,93.9L13.9,93.3L13.4,92.9L13.3,91.8L10.8,91.3L11.3,89.9L11.5,88.6L11.9,88.1L11.6,87.7L9.7,87.2L9.8,86.4L9.5,85.9L9.6,85.4L9.1,84.3L9.6,83.5L7.1,83.6L7.4,77.6L7.9,77.6L8.4,76.8L9.0,76.5L8.7,75.7L9.1,75.2L9.2,72.0L11.1,67.8L16.9,75.2Z","lx":12.0,"ly":80.6,"area":164.2},"wuwei":{"d":"M32.0,28.6L16.3,33.1L23.9,13.1L35.6,14.4L36.7,17.1L32.0,28.6Z","lx":27.3,"ly":22.8,"area":237.0},"jincheng":{"d":"M16.3,33.1L32.0,28.6L31.9,28.9L19.7,41.8L17.6,39.2L16.3,34.8L15.7,33.8L16.3,33.1Z","lx":20.6,"ly":37.0,"area":84.3},"longxi":{"d":"M31.9,28.9L32.1,31.8L25.3,46.3L22.0,44.8L19.7,41.8L31.9,28.9Z","lx":27.1,"ly":36.8,"area":77.4},"tianshui":{"d":"M32.1,31.8L36.0,44.3L33.9,46.8L28.8,48.0L25.3,46.3L32.1,31.8Z","lx":31.6,"ly":38.1,"area":87.8},"anding":{"d":"M32.1,31.8L32.0,28.6L36.7,17.1L38.0,20.0L39.3,26.0L41.7,32.8L42.0,38.8L37.3,42.8L36.0,44.3L32.1,31.8Z","lx":36.4,"ly":30.3,"area":157.7},"zhangye":{"d":"M16.3,33.1L15.7,33.8L14.2,31.2L8.5,26.8L0.0,23.2L0.0,14.0L13.6,12.0L23.9,13.1L16.3,33.1Z","lx":10.9,"ly":18.6,"area":316.3},"taiyuan":{"d":"M52.7,24.8L60.5,26.2L60.3,28.8L60.5,31.2L54.3,32.6L52.7,24.8Z","lx":56.8,"ly":27.5,"area":44.3},"shangdang":{"d":"M54.3,32.6L60.5,31.2L60.7,34.8L59.3,36.4L55.3,36.8L53.0,34.6L54.3,32.6Z","lx":57.1,"ly":33.6,"area":30.0},"xihe":{"d":"M46.7,23.2L52.0,24.0L52.7,24.8L54.3,32.6L53.0,34.6L51.9,33.6L48.8,35.2L45.1,36.0L42.7,36.8L42.0,32.8L40.6,29.2L46.7,23.2Z","lx":47.6,"ly":30.9,"area":126.9},"yanmen":{"d":"M52.7,24.8L52.0,24.0L59.8,13.1L62.0,18.4L60.7,23.2L60.5,26.2L52.7,24.8Z","lx":57.8,"ly":20.8,"area":68.4},"yunzhong":{"d":"M52.0,24.0L46.7,23.2L47.5,12.0L52.5,11.2L59.7,12.8L59.8,13.1L52.0,24.0Z","lx":51.6,"ly":18.1,"area":110.1},"shuofang":{"d":"M46.7,23.2L40.6,29.2L39.3,26.0L38.0,18.0L38.0,13.6L47.5,12.0L46.7,23.2Z","lx":42.6,"ly":20.6,"area":116.7},"guangyang":{"d":"M68.6,17.4L73.3,22.1L73.5,23.1L66.0,22.8L68.6,17.4Z","lx":69.2,"ly":19.8,"area":21.8},"shanggu":{"d":"M68.6,17.4L66.0,22.8L64.4,22.8L61.7,20.8L61.6,20.1L62.0,18.4L60.6,15.0L60.3,13.6L67.5,7.5L68.6,17.4Z","lx":64.8,"ly":16.2,"area":79.6},"yuyang":{"d":"M73.3,22.1L68.6,17.4L67.5,7.5L67.8,7.2L74.3,6.3L73.3,22.1Z","lx":70.9,"ly":12.4,"area":74.8},"youbeiping":{"d":"M83.1,6.9L77.7,23.3L76.7,23.3L75.6,23.7L74.7,23.1L73.5,23.1L73.3,22.1L74.3,6.3L82.9,5.1L83.1,6.9Z","lx":77.2,"ly":14.5,"area":120.1},"liaoxi":{"d":"M89.3,22.5L88.1,23.8L87.0,24.0L86.9,24.5L85.3,25.1L85.2,24.7L85.1,24.3L87.1,23.5L86.9,23.1L87.5,22.4L85.7,22.4L85.7,21.8L86.5,21.4L86.4,21.0L86.5,20.6L87.5,20.2L88.1,19.4L89.3,22.5ZM83.1,6.9L87.0,16.6L85.3,16.4L84.0,17.6L83.0,19.1L80.0,20.4L79.3,21.0L78.7,22.4L77.7,23.3L83.1,6.9Z","lx":83.3,"ly":11.6,"area":60.8},"liaodong":{"d":"M88.1,19.4L89.1,17.8L87.7,16.6L87.6,16.1L87.0,16.6L83.1,6.9L82.9,5.1L84.7,4.8L94.9,8.0L100.0,12.5L100.0,17.1L97.9,18.1L95.3,20.6L94.1,20.7L93.7,20.5L93.5,20.8L91.6,21.3L89.3,22.5L88.1,19.4Z","lx":93.0,"ly":14.3,"area":177.7},"nanhai":{"d":"M56.9,79.2L59.3,78.7L60.1,77.9L64.9,80.2L66.1,81.9L71.9,85.4L71.5,85.6L70.9,85.4L70.7,86.1L69.9,86.5L70.2,86.8L69.6,87.2L69.4,88.2L68.7,88.0L68.3,88.4L67.3,88.7L66.6,88.5L66.1,89.1L65.1,88.7L63.9,89.5L63.6,89.4L63.2,88.9L62.9,89.5L62.9,89.8L62.2,89.6L61.9,89.8L60.8,89.8L59.7,88.5L59.7,87.4L59.4,87.5L59.1,87.7L59.1,88.2L58.7,88.3L59.5,89.6L59.5,91.0L58.1,91.6L57.9,91.1L57.5,92.3L57.0,92.2L56.2,92.8L55.5,92.0L55.6,92.7L55.3,93.0L54.9,92.9L54.5,92.6L56.9,79.2Z","lx":63.3,"ly":85.4,"area":136.9},"cangwu":{"d":"M54.5,92.6L54.0,92.5L53.8,93.1L53.5,93.1L52.9,93.7L51.6,94.0L50.0,91.5L47.9,79.2L52.5,79.9L56.9,79.2L54.5,92.6Z","lx":52.3,"ly":85.7,"area":88.5},"yulin":{"d":"M50.0,91.5L38.3,88.6L36.7,85.3L42.4,79.9L42.2,79.1L47.9,79.2L50.0,91.5Z","lx":43.3,"ly":86.9,"area":107.1},"hepu":{"d":"M38.3,88.6L50.0,91.5L51.6,94.0L50.9,93.9L50.8,94.2L50.1,94.4L49.4,95.1L49.0,95.0L48.9,94.6L48.7,95.2L48.0,96.2L48.1,96.5L48.7,96.6L48.5,97.2L49.2,98.1L48.6,98.8L47.2,98.8L47.1,98.3L47.4,98.3L47.4,98.1L47.0,97.9L46.3,96.3L46.4,95.4L46.7,94.6L47.2,94.4L47.2,94.0L46.6,93.7L46.4,93.8L46.0,93.2L45.8,93.2L45.9,93.8L44.6,94.2L44.3,94.2L44.4,93.6L43.3,93.4L42.8,92.9L42.7,92.3L42.3,92.3L42.4,93.4L42.2,93.5L41.8,93.2L41.5,93.7L40.0,93.9L39.2,94.6L38.3,88.6ZM39.7,93.4L39.5,93.5L39.3,93.5L39.5,93.5L39.7,93.4ZM42.8,104.2L42.9,102.7L45.0,100.9L44.7,100.9L45.1,100.3L45.8,100.3L46.3,100.0L47.7,100.0L48.0,99.7L48.6,99.8L48.8,100.0L48.8,99.7L49.5,100.0L49.7,99.4L50.7,100.4L50.9,101.3L50.2,101.7L49.6,102.8L49.0,104.9L47.6,105.9L47.5,106.3L42.8,104.2Z","lx":49.0,"ly":93.7,"area":87.9},"jiaozhi":{"d":"M38.3,88.6L39.2,94.6L38.7,94.8L38.5,95.7L37.8,96.1L37.5,95.9L36.9,96.1L36.2,95.9L36.5,97.0L35.8,97.8L35.8,98.4L28.9,97.7L29.1,97.3L27.5,96.2L25.9,97.1L24.1,96.4L23.2,94.9L23.3,94.2L27.2,89.3L28.9,88.7L28.2,89.1L33.2,88.1L33.4,88.2L33.6,88.2L33.8,88.2L33.2,88.1L33.9,87.9L36.7,85.3L38.3,88.6ZM38.5,93.5L38.7,93.4L38.5,93.5L38.2,93.1L38.5,93.5ZM37.5,92.8L37.9,93.1L37.9,93.1L37.5,92.8ZM37.2,92.2L37.2,92.3L37.2,92.2L37.2,92.2ZM36.8,92.1L36.4,91.9L36.1,92.0L36.8,92.1ZM36.5,88.8L36.3,89.3L36.5,88.8L36.5,88.8ZM36.1,91.7L36.1,91.4L36.1,91.0L36.1,91.4L36.1,91.7ZM36.0,89.6L36.0,89.6L36.0,89.6L36.0,89.6ZM35.8,90.6L35.8,89.9L36.0,89.6L35.8,89.9L35.7,90.4L35.8,90.6ZM35.9,90.6L35.9,90.6L35.8,90.6L35.9,90.6ZM35.7,88.3L35.8,88.4L35.7,88.3L35.7,88.3ZM35.4,88.4L35.4,88.4L35.4,88.4L35.4,88.4ZM34.7,88.5L34.8,88.5L34.6,88.3L34.7,88.5ZM33.9,88.0L34.4,88.1L34.5,88.1L34.4,88.1L33.9,88.0ZM27.2,89.3L27.1,89.6L27.0,89.7L27.1,89.6L27.2,89.3ZM27.0,89.8L27.0,89.7L27.0,89.7L27.0,89.8ZM26.8,89.8L26.8,89.8L26.9,89.8L26.8,89.8Z","lx":32.0,"ly":91.8,"area":128.1},"jiuzhen":{"d":"M35.8,98.4L34.5,100.0L33.8,100.2L33.3,101.6L33.2,102.8L32.6,104.1L33.5,105.9L35.2,107.5L32.7,108.8L32.1,107.3L31.4,107.0L30.8,106.1L30.9,105.2L29.5,104.7L26.8,102.7L27.3,102.0L27.2,101.2L29.1,101.5L30.3,99.9L30.0,99.1L29.5,99.1L29.2,98.4L28.4,98.2L28.9,97.7L35.8,98.4Z","lx":30.3,"ly":103.3,"area":43.9},"rinan":{"d":"M47.3,106.2L46.8,106.3L46.4,106.9L45.8,107.1L44.2,106.5L43.1,105.8L42.8,104.2L47.3,106.2ZM35.2,107.5L35.6,108.1L35.5,109.0L35.2,108.9L37.7,111.7L37.9,112.3L39.2,113.4L40.1,114.6L40.8,114.6L41.4,115.6L41.6,115.6L41.6,115.9L38.7,115.9L37.1,114.5L36.8,113.9L36.4,114.1L36.1,114.0L35.7,113.3L35.6,112.1L32.7,108.8L35.2,107.5Z","lx":36.5,"ly":111.8,"area":27.1}},"cities":{"jingzhao":{"n":"長安","x":43.7,"y":42.9},"hongnong":{"n":"陝","x":51.2,"y":40.9},"henan":{"n":"洛陽","x":55.8,"y":41.4},"henei":{"n":"懐","x":58.0,"y":39.8},"hedong":{"n":"安邑","x":51.5,"y":39.6},"yingchuan":{"n":"陽翟","x":59.3,"y":43.6},"runan":{"n":"平輿","x":63.1,"y":48.4},"chenguo":{"n":"陳","x":64.1,"y":45.0},"liangguo":{"n":"睢陽","x":66.4,"y":42.4},"peiguo":{"n":"相","x":70.5,"y":44.4},"weijun":{"n":"鄴","x":62.4,"y":34.8},"julu":{"n":"癭陶","x":64.1,"y":29.6},"zhongshan":{"n":"盧奴","x":64.3,"y":26.0},"hejian":{"n":"楽成","x":68.1,"y":26.4},"bohai":{"n":"南皮","x":70.2,"y":28.2},"chenliu":{"n":"陳留","x":62.7,"y":40.8},"dongjun":{"n":"濮陽","x":64.7,"y":37.0},"shanyang":{"n":"昌邑","x":68.8,"y":39.6},"taishan":{"n":"奉高","x":71.9,"y":35.2},"pingyuan":{"n":"平原","x":69.2,"y":31.2},"jinan":{"n":"東平陵","x":73.1,"y":33.2},"beihai":{"n":"営陵","x":77.3,"y":33.6},"donglai":{"n":"黄","x":83.7,"y":30.0},"pengcheng":{"n":"彭城","x":71.9,"y":42.8},"langye":{"n":"開陽","x":75.9,"y":39.6},"xiapi":{"n":"下邳","x":74.4,"y":44.2},"guangling":{"n":"広陵","x":79.3,"y":50.4},"nanyang":{"n":"宛","x":55.9,"y":48.0},"xiangyang":{"n":"襄陽","x":54.7,"y":51.8},"jiangxia":{"n":"安陸","x":62.0,"y":58.0},"nanjun":{"n":"江陵","x":54.9,"y":58.4},"wuling":{"n":"臨沅","x":53.2,"y":64.0},"changsha":{"n":"臨湘","x":57.6,"y":67.2},"lingling":{"n":"泉陵","x":52.9,"y":75.1},"guiyang":{"n":"郴","x":57.6,"y":76.7},"jiujiang":{"n":"寿春","x":70.5,"y":49.6},"danyang":{"n":"建業","x":77.3,"y":52.0},"wujun":{"n":"呉","x":83.4,"y":54.8},"kuaiji":{"n":"山陰","x":83.4,"y":60.4},"yuzhang":{"n":"南昌","x":67.5,"y":65.2},"jianan":{"n":"東冶","x":76.9,"y":74.3},"shu":{"n":"成都","x":27.4,"y":57.3},"guanghan":{"n":"涪","x":30.2,"y":53.6},"baxi":{"n":"江州","x":35.6,"y":61.6},"hanzhong":{"n":"南鄭","x":37.3,"y":48.0},"qianwei":{"n":"僰道","x":28.5,"y":64.8},"yuexi":{"n":"邛都","x":21.0,"y":68.4},"yizhou":{"n":"滇池","x":22.7,"y":79.9},"zangke":{"n":"故且蘭","x":39.0,"y":72.7},"yongchang":{"n":"不韋","x":10.8,"y":79.5},"wuwei":{"n":"姑臧","x":22.5,"y":28.3},"jincheng":{"n":"允吾","x":23.7,"y":34.0},"longxi":{"n":"狄道","x":26.8,"y":38.0},"tianshui":{"n":"冀","x":30.5,"y":40.4},"anding":{"n":"臨涇","x":38.0,"y":37.2},"zhangye":{"n":"觻得","x":15.3,"y":24.4},"taiyuan":{"n":"晋陽","x":56.1,"y":28.6},"shangdang":{"n":"長子","x":57.3,"y":35.6},"xihe":{"n":"離石","x":51.2,"y":30.0},"yanmen":{"n":"陰館","x":56.9,"y":22.4},"yunzhong":{"n":"雲中","x":52.5,"y":18.0},"shuofang":{"n":"臨戎","x":41.7,"y":16.8},"guangyang":{"n":"薊","x":69.2,"y":20.4},"shanggu":{"n":"沮陽","x":66.1,"y":18.4},"yuyang":{"n":"漁陽","x":71.2,"y":17.6},"youbeiping":{"n":"土垠","x":75.9,"y":18.0},"liaoxi":{"n":"陽楽","x":82.0,"y":20.8},"liaodong":{"n":"襄平","x":92.9,"y":14.8},"nanhai":{"n":"番禺","x":58.5,"y":87.4},"cangwu":{"n":"広信","x":52.5,"y":85.9},"yulin":{"n":"布山","x":45.8,"y":87.5},"hepu":{"n":"合浦","x":44.7,"y":93.1},"jiaozhi":{"n":"龍編","x":33.6,"y":95.5},"jiuzhen":{"n":"胥浦","x":33.2,"y":100.7},"rinan":{"n":"西捲","x":38.0,"y":113.9}},"links":[["jingzhao","hongnong"],["jingzhao","hedong"],["jingzhao","tianshui"],["jingzhao","anding"],["jingzhao","xihe"],["hongnong","henan"],["hongnong","hedong"],["henan","henei"],["henan","hedong"],["henan","yingchuan"],["henan","nanyang"],["henan","shangdang"],["henei","hedong"],["henei","yingchuan"],["henei","shangdang"],["hedong","shangdang"],["hedong","xihe"],["yingchuan","runan"],["yingchuan","chenguo"],["yingchuan","chenliu"],["yingchuan","nanyang"],["runan","chenguo"],["runan","peiguo"],["runan","nanyang"],["runan","jiangxia"],["runan","jiujiang"],["chenguo","liangguo"],["chenguo","peiguo"],["chenguo","chenliu"],["liangguo","peiguo"],["liangguo","chenliu"],["liangguo","shanyang"],["peiguo","shanyang"],["peiguo","pengcheng"],["peiguo","jiujiang"],["weijun","julu"],["weijun","chenliu"],["weijun","dongjun"],["weijun","shangdang"],["julu","zhongshan"],["julu","hejian"],["julu","bohai"],["julu","dongjun"],["julu","taishan"],["zhongshan","hejian"],["zhongshan","yanmen"],["zhongshan","guangyang"],["zhongshan","shanggu"],["hejian","bohai"],["hejian","guangyang"],["bohai","dongjun"],["bohai","taishan"],["bohai","pingyuan"],["bohai","jinan"],["bohai","guangyang"],["bohai","youbeiping"],["chenliu","dongjun"],["chenliu","shanyang"],["dongjun","shanyang"],["dongjun","taishan"],["shanyang","taishan"],["taishan","pingyuan"],["taishan","jinan"],["taishan","beihai"],["taishan","langye"],["pingyuan","jinan"],["jinan","beihai"],["beihai","donglai"],["beihai","langye"],["pengcheng","xiapi"],["pengcheng","jiujiang"],["langye","xiapi"],["langye","guangling"],["xiapi","guangling"],["xiapi","jiujiang"],["xiapi","danyang"],["guangling","danyang"],["guangling","wujun"],["nanyang","xiangyang"],["nanyang","jiangxia"],["xiangyang","jiangxia"],["xiangyang","nanjun"],["xiangyang","hanzhong"],["jiangxia","nanjun"],["jiangxia","changsha"],["jiangxia","jiujiang"],["jiangxia","yuzhang"],["nanjun","wuling"],["nanjun","changsha"],["nanjun","baxi"],["nanjun","hanzhong"],["wuling","changsha"],["wuling","lingling"],["wuling","baxi"],["changsha","lingling"],["changsha","guiyang"],["changsha","yuzhang"],["lingling","guiyang"],["lingling","cangwu"],["guiyang","yuzhang"],["guiyang","nanhai"],["guiyang","cangwu"],["jiujiang","danyang"],["jiujiang","yuzhang"],["danyang","wujun"],["danyang","kuaiji"],["danyang","yuzhang"],["wujun","kuaiji"],["kuaiji","yuzhang"],["kuaiji","jianan"],["yuzhang","jianan"],["yuzhang","nanhai"],["jianan","nanhai"],["shu","guanghan"],["shu","baxi"],["shu","qianwei"],["shu","yuexi"],["guanghan","baxi"],["guanghan","hanzhong"],["guanghan","tianshui"],["baxi","hanzhong"],["baxi","qianwei"],["baxi","zangke"],["hanzhong","tianshui"],["qianwei","yuexi"],["qianwei","yizhou"],["qianwei","zangke"],["yuexi","yizhou"],["yuexi","yongchang"],["yizhou","zangke"],["yizhou","yongchang"],["yizhou","jiaozhi"],["zangke","yulin"],["zangke","jiaozhi"],["wuwei","jincheng"],["wuwei","anding"],["wuwei","zhangye"],["jincheng","longxi"],["jincheng","anding"],["jincheng","zhangye"],["longxi","tianshui"],["longxi","anding"],["tianshui","anding"],["anding","xihe"],["anding","shuofang"],["taiyuan","shangdang"],["taiyuan","xihe"],["taiyuan","yanmen"],["shangdang","xihe"],["xihe","yanmen"],["xihe","yunzhong"],["xihe","shuofang"],["yanmen","yunzhong"],["yanmen","shanggu"],["yunzhong","shuofang"],["guangyang","shanggu"],["guangyang","yuyang"],["guangyang","youbeiping"],["shanggu","yuyang"],["yuyang","youbeiping"],["youbeiping","liaoxi"],["youbeiping","liaodong"],["liaoxi","liaodong"],["nanhai","cangwu"],["cangwu","yulin"],["cangwu","hepu"],["yulin","hepu"],["yulin","jiaozhi"],["hepu","jiaozhi"],["hepu","rinan"],["jiaozhi","jiuzhen"],["jiuzhen","rinan"]],"ctx":"M5.4,115.8L5.9,113.6L4.7,113.8L4.1,111.5L2.9,110.3L2.6,113.1L1.5,113.9L0.6,112.8L1.1,114.1L0.0,114.9L0.0,0.0L100.0,0.0L100.0,25.1L98.8,24.5L99.5,21.9L97.5,21.0L97.1,21.5L96.1,19.9L91.0,21.6L85.3,25.1L85.1,24.3L87.1,23.5L87.5,22.4L85.7,22.4L85.7,21.8L89.0,18.0L87.6,16.1L85.3,16.4L83.0,19.1L79.3,21.0L77.9,23.3L75.6,23.7L74.1,23.2L73.1,25.2L74.6,27.2L77.8,27.8L78.3,29.2L77.8,30.7L78.9,31.4L80.5,31.4L82.2,29.3L83.9,28.6L86.9,30.1L90.4,30.4L89.3,32.6L87.9,32.1L84.1,33.4L84.4,34.2L83.8,34.3L83.5,35.5L82.0,35.2L82.3,36.0L79.4,38.8L78.5,40.6L82.3,42.9L84.3,47.9L84.2,49.3L85.9,50.3L87.6,52.7L87.1,53.1L83.1,51.5L81.5,52.2L83.8,52.0L87.0,54.7L87.7,56.3L84.1,58.5L82.9,58.4L82.0,59.0L83.0,58.7L83.5,59.4L85.6,58.7L88.4,60.5L86.5,62.0L87.8,61.4L88.0,62.0L87.9,63.4L87.2,62.9L86.3,63.4L87.0,64.1L86.4,65.4L86.8,66.8L85.2,66.6L83.9,67.9L83.4,70.3L81.6,73.3L80.0,72.8L81.0,74.6L79.5,75.7L78.4,75.5L79.1,76.2L80.1,75.9L80.1,78.4L78.6,78.1L78.9,79.0L77.9,79.1L77.7,80.2L76.7,80.6L76.8,81.5L74.9,81.4L74.0,82.0L74.8,83.0L72.4,85.6L70.9,85.4L69.4,88.2L66.1,89.1L65.1,88.7L63.9,89.5L63.2,88.9L62.9,89.8L61.1,89.9L59.4,87.5L58.7,88.3L59.5,91.0L58.1,91.6L57.9,91.1L57.5,92.3L56.2,92.8L55.5,92.0L55.3,93.0L54.0,92.5L52.9,93.7L50.9,93.9L49.4,95.1L48.9,94.6L48.0,96.2L49.2,97.9L48.6,98.8L47.2,98.8L46.3,96.3L47.2,94.0L45.8,93.2L45.9,93.8L44.3,94.2L44.4,93.6L43.3,93.4L42.7,92.3L42.4,93.4L40.0,93.9L38.7,94.8L37.8,96.1L36.2,95.9L36.5,97.0L35.7,98.8L33.8,100.2L32.6,104.1L35.6,108.1L35.2,108.9L41.6,115.9L5.4,115.8ZM99.8,29.1L98.3,28.3L99.0,27.7L97.3,27.5L99.7,25.3L99.8,29.1ZM50.9,101.3L49.0,104.9L46.4,106.9L43.1,105.8L42.9,102.7L45.1,100.3L49.5,100.0L49.8,99.4L50.9,101.3ZM88.9,105.9L88.7,109.3L89.9,111.4L88.6,115.2L87.0,115.9L80.6,115.9L80.8,114.6L81.9,115.7L82.7,115.3L82.6,109.4L83.4,105.9L85.1,105.5L88.0,106.8L88.9,105.9ZM84.2,92.2L81.6,87.6L81.8,85.3L84.9,79.8L86.8,78.8L87.8,79.7L87.6,81.8L84.2,92.2Z","riv":"M52.5,49.7L50.8,49.0M4.4,40.6L3.6,40.2M6.0,39.6L5.2,40.5M26.6,65.3L28.3,65.4L29.7,64.7L30.8,65.1L32.5,64.3L33.4,64.6L33.4,63.9L34.4,63.5L35.7,62.3L35.8,61.6L36.6,61.6L37.6,60.8L38.5,61.1L38.8,60.5L39.4,60.5L42.4,56.4L45.9,55.8L48.4,55.8L51.4,56.6L52.7,58.8L53.6,58.3L55.1,58.8L55.0,59.5L55.5,59.9L55.6,61.0L57.4,61.0L57.4,61.8L58.1,62.1M52.5,49.7L53.5,51.4L54.6,51.8L55.0,52.9L55.6,53.3L55.7,54.7L56.2,55.2L56.3,57.1L56.7,57.7L58.9,58.3L60.8,57.3L62.0,57.7M35.2,47.7L36.2,47.4L37.4,47.8L40.4,47.0L40.5,47.5L41.6,48.1L42.4,49.8L42.9,49.9L44.3,49.0L46.6,48.2L48.5,48.7L50.2,48.6L50.8,49.0M4.4,40.6L5.2,40.5M6.0,39.6L6.6,39.6L8.1,40.8L8.0,41.6L8.7,42.4L9.5,42.1L10.2,42.3L10.6,44.3L11.3,45.0L12.6,44.8L14.2,45.6L14.7,44.9L16.1,44.3L16.8,44.9L17.4,44.7L19.2,45.3L20.6,46.5L22.0,46.0L21.0,44.4L18.1,42.9L16.5,41.3L14.8,40.7L14.1,38.3L14.4,37.2L16.6,35.4L18.1,35.7L19.5,35.4L21.0,36.6L23.6,36.8L24.7,36.5L24.5,36.1L25.0,35.4L27.1,35.7L27.7,34.7L29.5,33.5L29.2,32.8L28.2,32.2L28.3,31.3L30.5,30.1L33.2,29.7L35.4,26.5L36.9,23.7L36.3,19.9L37.8,18.4L38.1,17.6L39.8,16.6L40.9,16.5L42.0,16.7L43.7,17.8L48.5,18.1L49.7,18.8L51.3,19.0L52.2,19.9L52.3,21.7L51.4,22.4L51.5,23.0L50.8,24.2L50.5,25.8L49.2,27.5L50.1,29.5L49.5,31.1L48.8,32.0L49.4,37.8L48.5,39.4L48.4,41.4L50.2,41.4L52.8,40.4L53.7,39.7L57.1,40.7L59.0,40.1L62.6,40.3L63.8,39.9M0.6,39.5L3.6,40.2M63.9,39.9L64.5,38.7L67.4,36.5L72.4,31.7L75.0,30.6L75.9,29.6L78.1,28.7M11.5,67.5L12.2,70.2L13.5,72.3L14.3,70.4L14.6,68.8L14.9,68.6L15.4,70.7L15.1,71.3L14.9,72.8L15.1,75.0L16.8,75.1L19.4,73.6L20.1,74.5L19.8,75.9L20.4,76.0L22.0,74.6L22.3,74.5L22.7,75.0L23.7,74.4L23.9,73.9L23.4,70.7L24.2,70.2L25.4,68.7L25.4,67.3L26.6,66.8L26.6,65.3M8.6,53.2L9.7,54.7L8.9,55.1L10.0,57.1L10.7,65.4L11.5,67.4M58.1,62.1L60.0,60.2L61.0,59.8L60.6,59.0L61.1,58.9L62.4,57.3L63.9,57.7L64.0,58.3L66.1,60.4L67.3,60.9L68.5,60.8M68.5,61.0L68.5,60.8M68.5,60.8L70.4,59.6L70.8,58.4L71.9,57.8L72.0,57.3L73.2,56.9L74.0,55.5L75.6,54.6L75.9,53.4L76.9,51.7L77.8,51.2L80.1,51.0L81.6,52.1","xiong":[40.7,5.6]};
+if(typeof document!=='undefined'){
+let g=newGame(SCEN[2]);
+let layer='state',metric='pop',auto=null,zoom=1,stepN=1,speed=500;
+function advance(){for(let i=0;i<stepN;i++)step(g);render();}
+const $=s=>document.querySelector(s);
+const me=()=>g.sb[g.player];
+const CORV=['なし','軽い','ふつう','重い'];
+const LAYERS={state:['勢力','色は国ごとに分かれます'],pop:['人口の密度','濃いほど人口が過密(土地の限界に近い)'],order:['民心','濃いほど民心が不穏'],clan:['豪族','濃いほど豪族の力が強い'],garr:['兵力','濃いほど守備兵が厚い']};
+const METRICS={pop:['天下の人口','万人'],order:['民心(操作中の国)','点'],treasury:['国庫(操作中の国)','万石'],m:['天命(操作中の国)','点'],terr:['領土(操作中の国)','郡']};
+function mix(v){return `color-mix(in srgb, var(--hot) ${Math.round(clamp(v,0,1)*70)}%, var(--cell))`}
+function garrPct(p){return p.garr/Math.max(.05,garrTarget(p)*1.2);}
+function layerVal(p){
+  if(layer==='pop')return p.pop/(p.base*1.1*(.5+p.farm/100));
+  if(layer==='order')return 1-p.order/100;
+  if(layer==='clan')return p.clan/100;
+  return garrPct(p);
+}
+function layerFill(p){
+  if(layer==='state')return `color-mix(in srgb, ${g.sb[p.owner].color} 58%, var(--cell))`;
+  return mix(layerVal(p));
+}
+function layerText(p){
+  if(layer==='state')return g.sb[p.owner].name;
+  if(layer==='pop')return fmt(p.pop)+'万';
+  if(layer==='order')return Math.round(p.order);
+  if(layer==='clan')return Math.round(p.clan);
+  return p.garr.toFixed(1)+'万';
+}
+function renderMap(){
+  const minN=14/(zoom*zoom),minV=34/(zoom*zoom);
+  let s=`<path class="ctx" d="${GEO.ctx}"/>`;
+  g.provs.forEach(p=>{
+    const z=GEO.z[p.id],S=g.sb[p.owner];
+    s+=`<g class="pv${p.id===g.sel?' sel':''}${p.rebel?' reb':''}" data-id="${p.id}" tabindex="0" role="button" aria-label="${p.name}(${S.name})を選ぶ"><path class="zh" d="${z.d}" style="fill:${layerFill(p)}"/></g>`;
+  });
+  s+=`<path class="river" d="${GEO.riv}"/>`;
+  const caps={};livingStates(g).forEach(S=>{if(S.capital)caps[S.capital]=S;});
+  Object.keys(GEO.cities).forEach(k=>{
+    const c=GEO.cities[k],S=caps[k];
+    if(!S&&zoom<2)return;
+    s+=`<circle class="city${S?' cap':''}" cx="${c.x}" cy="${c.y}" r="${S?.9:.45}"${S?` style="fill:${S.color}"`:''}/>`;
+    if(S||zoom>=2)s+=`<text class="cn${S?' capt':''}" x="${c.x+1.1}" y="${c.y+.6}">${c.n}</text>`;
+  });
+  g.provs.forEach(p=>{
+    const z=GEO.z[p.id],S=g.sb[p.owner];
+    if(z.area<minN)return;
+    s+=`<g class="lb"><circle class="ow" cx="${z.lx}" cy="${z.ly-2.4}" r=".6" style="fill:${S.color}"/><text class="nm" x="${z.lx}" y="${z.ly}">${p.name}</text>`;
+    if(z.area>=minV)s+=`<text class="vl" x="${z.lx}" y="${z.ly+1.9}">${p.rebel?'反乱中':layerText(p)}</text>`;
+    if(p.tag)s+=`<text class="tg" x="${z.lx}" y="${z.ly+3.7}">${p.tag}</text>`;
+    s+=`</g>`;
+  });
+  const X=GEO.xiong;
+  s+=`<text class="xn" x="${X[0]}" y="${X[1]}">匈奴</text>
+   <rect x="${X[0]-12}" y="${X[1]+1.6}" width="24" height="1.8" fill="var(--cell)"/><rect x="${X[0]-12}" y="${X[1]+1.6}" width="${g.threat*.24}" height="1.8" fill="var(--hot)"/>
+   <text class="vl" x="${X[0]}" y="${X[1]+6}">脅威 ${Math.round(g.threat)}</text>`;
+  const m=$('#map');m.setAttribute('viewBox',`0 0 100 ${GEO.h}`);m.style.width=(zoom*100)+'%';m.innerHTML=s;
+  $('#legend').textContent=`${LAYERS[layer][0]}:${LAYERS[layer][1]}。点線の縁は反乱中、赤い字は洪水・旱魃・蝗害・地震の災害。`;
+}
+function renderStates(){
+  const ls=livingStates(g).map(S=>({S,t:totals(g,S)})).sort((a,b)=>b.t.pop-a.t.pop);
+  $('#statePanel').innerHTML=`<div class="row"><h2>諸勢力</h2><span class="legend" style="margin:0">${ls.length}国・選ぶとその国を操作</span></div><div class="states">`+
+   ls.map(({S,t})=>`<button class="stbtn" data-state="${S.id}" aria-pressed="${S.id===g.player}"><i style="background:${S.color}"></i><span><b>${S.name}</b><small>${S.tribe?S.tribe+'の国・':''}${t.n}郡・人口${fmt(t.pop)}万・国庫${fmt(S.treasury)}</small></span><span class="num">天命${Math.round(S.m)}</span></button>`).join('')+`</div>`;
+}
+function meter(label,pct,txt,hot){return `<div class="m"><div class="t"><span>${label}</span><span>${txt}</span></div><div class="bar${hot?' hot':''}"><i style="width:${clamp(pct,0,1)*100}%"></i></div></div>`}
+function renderProv(){
+  const p=g.by[g.sel],S=g.sb[p.owner],M=me(),mine=p.owner===g.player;
+  const need=p.pop*18,Kc=p.base*1.1*(.5+p.farm/100);
+  let h=`<div class="pname"><b>${p.name}</b><span>${p.sub}${p.river?'・大河':''}${p.border?'・辺境':''}</span><span class="owner"><i style="background:${S.color}"></i>${S.name}${S.capital===p.id?'の都':''}</span>${p.rebel?'<span class="badge">反乱中</span>':''}${p.tag?`<span class="badge">災害 ${p.tag}</span>`:''}</div>`;
+  h+=`<div class="meters">`+
+    meter('人口',p.pop/Kc,fmt(p.pop)+'万人')+
+    meter('開発度',p.farm/100,Math.round(p.farm))+
+    meter('民心',p.order/100,Math.round(p.order))+
+    meter('豪族の力',p.clan/100,Math.round(p.clan),true)+
+    meter('治水',p.dike/100,Math.round(p.dike))+
+    meter('学問',p.edu/100,Math.round(p.edu))+
+    meter('守備兵',garrPct(p),(p.garr*10).toFixed(p.garr<1?1:0)+'千人')+
+    meter('穀倉',p.granary/(need*.6),(p.granary/need*12).toFixed(1)+'か月分')+(p.border&&!S.nomad?meter('北辺の圧力',(p.press||0)/3,(p.press||0).toFixed(1)+' / 3',true):'')+`</div>`;
+  if(!mine){
+    const can=adjacentToState(g,M,p),cost=warCost(g,M),dis=M.points<2||M.treasury<cost;
+    if(can)h+=`<div class="acts"><button class="btn pri" data-attack="${p.id}" ${dis?'disabled':''}><b>${p.name}を攻める</b><small>隣接する他国の郡。戦力が上回れば奪えます<br>政務2・軍費${fmt(cost)}万石</small></button></div>`;
+    return void($('#provPanel').innerHTML=h+`<p class="note" style="margin:8px 0 0">${can?'':'他国の領土で、自国と隣り合っていないため攻められません。'}上の「諸勢力」から国を切り替えられます。</p>`);
+  }
+  h+=`<div class="acts">`;
+  Object.keys(ACTS).forEach(k=>{
+    const a=ACTS[k];if(a.only==='rebel'&&!p.rebel)return;
+    const c=Math.round(a.cost(p));
+    const dis=M.points<a.pt||M.treasury<c||(p.rebel&&k!=='crush'&&k!=='troops'&&k!=='relief');
+    h+=`<button class="btn" data-act="${k}" ${dis?'disabled':''}><b>${a.label}</b><small>${a.desc}<br>政務${a.pt}・${fmt(c)}万石</small></button>`;
+  });
+  $('#provPanel').innerHTML=h+`</div>`;
+}
+function renderNat(){
+  const M=me(),cp=natCost(M,'purge'),ce=natCost(M,'exped');
+  const hasB=psOf(g,M).some(p=>p.border&&!p.rebel);
+  const dp=M.points<1||M.treasury<cp,de=M.points<2||M.treasury<ce||!hasB;
+  $('#natActs').innerHTML=`<button class="btn" data-nat="purge" ${dp?'disabled':''}><b>官吏の粛正</b><small>腐敗-12<br>政務1・${fmt(cp)}万石</small></button>
+  <button class="btn" data-nat="exped" ${de?'disabled':''}><b>匈奴遠征</b><small>北辺の守備兵が厚いほど成功しやすい${hasB?'':'(北辺の郡なし)'}<br>政務2・${fmt(ce)}万石</small></button>`;
+}
+function stat(l,v,sub,bar,hot){return `<div class="stat"><dt>${l}</dt><dd>${v}${sub?`<small>${sub}</small>`:''}</dd>${bar!=null?`<div class="bar${hot?' hot':''}"><i style="width:${clamp(bar,0,1)*100}%"></i></div>`:''}</div>`}
+function verdict(m){return m>=70?'盤石':m>=55?'安定':m>=40?'動揺':'危機'}
+function renderStats(){
+  const M=me(),t=totals(g,M),all=totals(g),n=M.last.net;
+  $('#stats').innerHTML=
+   stat('年',yearLabel(g.year),`${M.name}・建国${g.year-M.born}年`)+
+   stat(`${M.name}の人口`,fmt(t.pop)+'万人',`${t.n}郡・天下 ${fmt(all.pop)}万`)+
+   stat('国庫',fmt(M.treasury)+'万石',`前年収支 ${n>=0?'+':''}${fmt(n)}`)+
+   stat('天命',`${Math.round(M.m)} ${verdict(M.m)}`,`反乱 ${t.rebels}郡`,M.m/100)+
+   stat('民心',Math.round(t.order),'人口加重平均',t.order/100)+
+   stat('官界の腐敗',Math.round(M.corruption),'豪族 平均 '+Math.round(t.clan),M.corruption/100,true)+
+   stat('匈奴の脅威',Math.round(g.threat),'',g.threat/100,true);
+  $('#eraLine').textContent=`${M.name} ・ ${yearLabel(g.year)} ・ ${t.n}郡を治める`;
+}
+function renderLog(){
+  $('#log').innerHTML=g.log.slice(0,80).map(e=>`<li><span class="y">${e.y<0?'前'+(-e.y):e.y}年</span><span class="${e.t}">${e.m}</span></li>`).join('');
+}
+function renderChart(){
+  const H=g.hist,key=metric;if(H.length<2){$('#chart').innerHTML='<p class="note">年を進めると推移が表示されます。</p>';return;}
+  const vals=H.map(h=>h[key]);let lo=Math.min(...vals),hi=Math.max(...vals);
+  if(hi-lo<1e-6)hi=lo+1;const pad=(hi-lo)*.1;lo=Math.max(0,lo-pad);hi+=pad;
+  const W=320,Ht=130,L=34,R=8,T=8,B=18,x=i=>L+(W-L-R)*i/(H.length-1),y=v=>T+(Ht-T-B)*(1-(v-lo)/(hi-lo));
+  let s='';
+  for(let i=0;i<3;i++){const v=lo+(hi-lo)*i/2,yy=y(v);s+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${yy}" y2="${yy}"/><text x="${L-4}" y="${yy+3}" text-anchor="end">${fmt(v)}</text>`;}
+  s+=`<polyline class="ln" points="${H.map((h,i)=>x(i).toFixed(1)+','+y(h[key]).toFixed(1)).join(' ')}"/>`;
+  const li=H.length-1;s+=`<circle class="pt" cx="${x(li)}" cy="${y(vals[li])}" r="2.6"/>`;
+  s+=`<text x="${L}" y="${Ht-4}">${yearLabel(H[0].y)}</text><text x="${W-R}" y="${Ht-4}" text-anchor="end">${yearLabel(H[li].y)}</text>`;
+  $('#chart').innerHTML=`<svg class="chart" viewBox="0 0 ${W} ${Ht}" role="img" aria-label="${METRICS[key][0]}の推移">${s}</svg>`;
+}
+function renderControls(){
+  const M=me(),a=g.autoGov;
+  $('#polTitle').textContent=`${M.name}の国策`;
+  $('#autoGov').checked=a;
+  $('#tax').value=Math.round(M.tax*100);$('#taxOut').textContent=Math.round(M.tax*100)+'%';
+  $('#corvee').value=M.corvee;$('#corveeOut').textContent=CORV[M.corvee];
+  $('#salt').checked=M.salt;$('#sell').checked=M.sell;$('#heqin').checked=M.heqin;
+  ['tax','corvee','salt','sell','heqin'].forEach(id=>{$('#'+id).disabled=a;});
+}
+function renderBottom(){
+  const M=me(),mp=maxPts(g,M);
+  $('#ptsN').textContent=M.points;$('#ptsMax').textContent=mp;
+  $('#pips').innerHTML=Array.from({length:mp},(_,i)=>`<i class="${i<M.points?'on':''}"></i>`).join('');
+}
+function renderChips(){
+  const groups={};g.provs.forEach(p=>{(groups[p.zhou]=groups[p.zhou]||[]).push(p);});
+  $('#chips').innerHTML=`<label for="provSel" class="legend" style="display:block;margin:8px 0 4px">郡を選ぶ</label><select id="provSel" class="sel">`+
+   Object.keys(ZNAME).map(z=>`<optgroup label="${ZNAME[z]}">`+groups[z].map(p=>`<option value="${p.id}"${p.id===g.sel?' selected':''}>${p.name}(${g.sb[p.owner].name})</option>`).join('')+`</optgroup>`).join('')+`</select>`;
+}
+function render(){renderStats();renderStates();renderMap();renderChips();renderProv();renderNat();renderLog();renderChart();renderControls();renderBottom();}
+function setAuto(on){
+  if(auto){clearInterval(auto);auto=null;}
+  $('#auto').setAttribute('aria-pressed',on?'true':'false');
+  if(on)auto=setInterval(advance,speed);
+}
+$('#layerSeg').innerHTML=Object.keys(LAYERS).map(k=>`<button data-layer="${k}" aria-pressed="${k===layer}">${LAYERS[k][0]}</button>`).join('');
+$('#zoomSeg').innerHTML=[1,2,3].map(z=>`<button data-zoom="${z}" aria-pressed="${z===zoom}">×${z}</button>`).join('');
+$('#chartSeg').innerHTML=Object.keys(METRICS).map(k=>`<button data-metric="${k}" aria-pressed="${k===metric}">${METRICS[k][0].replace('(操作中の国)','')}</button>`).join('');
+$('#scnGrid').innerHTML=SCEN.map((s,i)=>`<button class="scn-btn" data-scn="${i}" aria-pressed="${i===2}"><b>${s.label}</b><span>${yearLabel(s.year)}</span><span>${s.note}</span></button>`).join('');
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button,g.pv');if(!b)return;
+  if(b.dataset.zoom){zoom=+b.dataset.zoom;document.querySelectorAll('[data-zoom]').forEach(x=>x.setAttribute('aria-pressed',x===b));renderMap();}
+  else if(b.dataset.layer){layer=b.dataset.layer;document.querySelectorAll('[data-layer]').forEach(x=>x.setAttribute('aria-pressed',x===b));renderMap();}
+  else if(b.dataset.metric){metric=b.dataset.metric;document.querySelectorAll('[data-metric]').forEach(x=>x.setAttribute('aria-pressed',x===b));renderChart();}
+  else if(b.dataset.scn!==undefined){setAuto(false);g=newGame(SCEN[+b.dataset.scn]);
+    document.querySelectorAll('[data-scn]').forEach(x=>x.setAttribute('aria-pressed',x===b));$('#scn').open=false;render();}
+  else if(b.dataset.state){g.player=b.dataset.state;g.sel=me().capital;render();}
+  else if(b.dataset.id){g.sel=b.dataset.id;renderMap();renderChips();renderProv();}
+  else if(b.dataset.act){const M=me(),p=g.by[g.sel],a=ACTS[b.dataset.act],c=Math.round(a.cost(p));
+    if(p.owner!==M.id||M.points<a.pt||M.treasury<c)return;M.treasury-=c;M.points-=a.pt;a.run(g,p);
+    g.log.unshift({y:g.year,t:'act',m:`${p.name}:${a.label}(${fmt(c)}万石)`});render();}
+  else if(b.dataset.attack){const M=me(),p=g.by[b.dataset.attack],B=g.sb[p.owner],c=warCost(g,M);
+    if(!adjacentToState(g,M,p)||M.points<2||M.treasury<c)return;M.points-=2;
+    const evs=[];battle(g,M,B,p,evs);evs.forEach(e=>g.log.unshift({y:g.year,t:e[0],m:e[1]}));render();}
+  else if(b.dataset.nat){const M=me(),k=b.dataset.nat,c=natCost(M,k),pt=k==='purge'?1:2;
+    if(M.points<pt||M.treasury<c)return;M.treasury-=c;M.points-=pt;k==='purge'?doPurge(g,M):doExped(g,M);render();}
+  else if(b.id==='next'){advance();}
+  else if(b.id==='auto'){setAuto(b.getAttribute('aria-pressed')!=='true');}
+});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('g.pv')){e.preventDefault();g.sel=e.target.dataset.id;renderMap();renderChips();renderProv();}});
+$('#chips').addEventListener('change',e=>{if(e.target.id==='provSel'){g.sel=e.target.value;renderMap();renderProv();}});
+$('#stepN').addEventListener('change',e=>{stepN=+e.target.value;$('#next').textContent=stepN===1?'次の年へ':`次の${stepN}年へ`;});
+$('#speed').addEventListener('change',e=>{speed=+e.target.value;if(auto)setAuto(true);});
+$('#tax').addEventListener('input',e=>{me().tax=e.target.value/100;$('#taxOut').textContent=e.target.value+'%';});
+$('#corvee').addEventListener('input',e=>{me().corvee=+e.target.value;$('#corveeOut').textContent=CORV[+e.target.value];});
+$('#salt').addEventListener('change',e=>{me().salt=e.target.checked;});
+$('#sell').addEventListener('change',e=>{me().sell=e.target.checked;});
+$('#heqin').addEventListener('change',e=>{me().heqin=e.target.checked;});
+$('#autoGov').addEventListener('change',e=>{g.autoGov=e.target.checked;renderControls();});
+render();
+}
+</script>
+
+</body></html>
